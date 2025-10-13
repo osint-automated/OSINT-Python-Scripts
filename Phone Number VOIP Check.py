@@ -6,8 +6,8 @@ from twilio.base.exceptions import TwilioRestException
 ACCOUNT_SID = "YOUR_ACCOUNT_SID"
 AUTH_TOKEN = "YOUR_AUTH_TOKEN"
 MAX_WORKERS = 10
-INPUT_FILE = "phone_numbers.csv"
-OUTPUT_FILE = "phone_results.csv"
+INPUT_FILE = input("Enter the input CSV file name (with phone numbers): ")
+OUTPUT_FILE = input("Enter the output CSV file name: ")
 
 def check_number(client, phone_number: str) -> tuple[str, str]:
     """Looks up a phone number using Twilio and checks if it's VoIP."""
