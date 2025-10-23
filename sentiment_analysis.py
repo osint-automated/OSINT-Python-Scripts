@@ -1,35 +1,30 @@
-import nltk
-from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from transformers import pipeline
+import textwrap
 
-nltk.download('vader_lexicon')
+sentiment_pipeline = pipeline("sentiment-analysis")
 
-sia = SentimentIntensityAnalyzer()
+file_path = input('Enter file name/path here: ')
+data = ''
 
-def read_text_from_file(file_path):
-    """
-    Reads the entire content of a text file and returns it as a string.
+with open(file_path, 'r') as file:
+        for line in file:
+            data += line.strip()
 
-    Args:
-        file_path (str): The path to the text file to be read.
+chunks = textwrap.wrap(data, width=512, break_long_words=True)
 
-    Returns:
-        str: The content of the file as a string.
+results = []
+for chunk in chunks:
+  result = sentiment_pipeline(chunk)
+  results.append(result[0])
 
-    Raises:
-        FileNotFoundError: If the specified file does not exist.
-        IOError: If an I/O error occurs while reading the file.
-    """
-    with open(file_path, 'r', encoding='utf-8') as file:
-        return file.read()
+total_score = 0
+for result in results:
+  total_score += result['score']
 
-file_path = input("Enter the path to your text file: ")
-text = read_text_from_file(file_path)
+average_score = total_score / len(results)
 
-sentiment = sia.polarity_scores(text)
+average_score_to_percentage = average_score * 100
 
-print('-' * 50)
-print(f'Negative Rating: ', sentiment.get('neg'))
-print(f'Neutral Rating: ', sentiment.get('neu'))
-print(f'Positive Rating: ', sentiment.get('pos'))
-print(f'Compound Rating: ', sentiment.get('compound'))
-print('-' * 50)
+print('-' *40)
+print(f"Sentiment Analysis Score for {file_path}: {average_score_to_percentage:.2f}% {result['label']}")
+print('-' *40)
