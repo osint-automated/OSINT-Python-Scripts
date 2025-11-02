@@ -1,7 +1,11 @@
 import requests
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 def get_geolocation(ip):
-    access_token = input('Enter your ipinfo.io access token: ')
+    access_token = os.getenv('ipinfo_api_key')
     url = f'https://ipinfo.io/{ip}/json?token={access_token}'
 
     try:
