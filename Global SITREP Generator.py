@@ -100,7 +100,8 @@ def main():
         "SOUTHCOM": "Venezuela OR Colombia OR Latin America AND (Russia OR United States OR military)",
         "EUCOM": "Ukraine AND Russia OR NATO",
         "PACOM": "China OR North Korea OR Taiwan OR South China Sea",
-        "CENTCOM": "Iran OR Israel OR Gaza OR Hamas OR Lebanon OR Syria"
+        "CENTCOM": "Iran OR Israel OR Gaza OR Hamas OR Lebanon OR Syria",
+        "AFRICOM": 'Sudan OR "South Sudan" OR Libya OR Mali OR Niger OR Chad OR "Burkina Faso" OR "Central African Republic" OR Somalia OR Ethiopia OR Eritrea OR Djibouti OR Mozambique OR "Democratic Republic of Congo" OR "Equatorial Guinea" OR Angola OR "South Africa" OR Zimbabwe OR Cameroon OR Algeria'
     }
 
     all_summaries = []
