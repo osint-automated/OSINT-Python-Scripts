@@ -56,7 +56,7 @@ def display_domains(domains):
 def main():
     shodan_api_key = os.getenv('shodan_api_key')
 
-    predefined_favicon_hash = input('Enter favicon hash here: ')
+    predefined_favicon_hash = input('Enter favicon hash here: ') #get favicon hash from https://favicon-hash.kmsec.uk/
 
     print(f"Searching for domains with favicon hash: {predefined_favicon_hash}...")
     related_domains = search_domains_by_favicon_hash(predefined_favicon_hash, shodan_api_key)
