@@ -1,4 +1,7 @@
 import feedparser
+import csv
+import os
+
 """
 This script searches for a user-provided term in the titles of news articles from a list of RSS feeds.
 Modules:
@@ -15,20 +18,53 @@ Workflow:
 Usage:
     Run the script and enter a search term when prompted. The script will display matching articles from the provided RSS feeds.
 """
+links = [
+    'http://feeds.bbci.co.uk/news/world/rss.xml',        # BBC World News
+    'http://rss.cnn.com/rss/edition_world.rss',         # CNN World
+    'https://www.aljazeera.com/xml/rss/all.xml',        # Al Jazeera
+    'https://moxie.foxnews.com/google-publisher/latest.xml',  # Fox News
+    'http://feeds.skynews.com/feeds/rss/world.xml',     # Sky News
+    'https://www.cnbc.com/id/100727362/device/rss/rss.html',  # CNBC
+    'http://www.mirror.co.uk/news/world-news/rss.xml',  # Mirror World
+    'https://rss.csmonitor.com/feeds/world',           # Christian Science Monitor
+    'https://feeds.feedburner.com/ndtvnews-world-news',# NDTV World
+]
 
-links = ['http://feeds.bbci.co.uk/news/world/rss.xml', 'http://rss.cnn.com/rss/edition_world.rss', 'https://moxie.foxnews.com/google-publisher/latest.xml', 'https://www.aljazeera.com/xml/rss/all.xml', 'https://feeds.thelocal.com/rss/es', 'http://feeds.skynews.com/feeds/rss/world.xml', 'https://www.worldaffairsjournal.org/feed/', 'https://www.vox.com/world-politics', 'https://danielspost.news.blog/feed/', 'https://bbcbreakingnews.com/feed/', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=4912590&q=site:https%3A%2F%2Fifpnews.com%2Ffeed%2F', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=60928&q=site:https%3A%2F%2Frss.csmonitor.com%2Ffeeds%2Fworld', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=4722784&q=site:https%3A%2F%2Fjustworldeducational.org%2Fcategory%2Fblog%2Ffeed%2F', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=4629316&q=site:https%3A%2F%2Fwww.pri.org%2Fstories%2Ffeed%2Feverything', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5329198&q=site:https%3A%2F%2Fhgsmediaplus.com%2Ffeed%2F', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5036647&q=site:https%3A%2F%2Fnewsblaze.com%2Ffeed%2F', 'https://timesofindia.indiatimes.com/rssfeeds/296589292.cms', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=252648&q=site:https%3A%2F%2Fwww.worldaffairsjournal.org%2Ffeed%2F', 'https://www.ctvnews.ca/rss/world/ctvnews-ca-world-public-rss-1.822289', 'https://www.thecipherbrief.com/feed', 'https://www.cnbc.com/id/100727362/device/rss/rss.html', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5170360&q=site:https%3A%2F%2Fwww.worldpresslive.com%2Ffeeds%2Fposts%2Fdefault', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5160768&q=site:https%3A%2F%2F247newsaroundtheworld.com%2Ffeed%2F', 'https://www.express.co.uk/feed/', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5148877&q=site:https%3A%2F%2Ffeeds.bizjournals.com%2Ffeeds%2Fworld', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5135141&q=site:https%3A%2F%2Febysblog.com%2Ffeed', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=1716348&q=site:https%3A%2F%2Fwww.ctvnews.ca%2Frss%2Fworld%2Fctvnews-ca-world-public-rss-1.822289', 'http://www.mirror.co.uk/news/world-news/rss.xml', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5161811&q=site:https%3A%2F%2Fworldupdatedaily.blogspot.com%2Ffeeds%2Fposts%2Fdefault%3Falt%3Drss', 'https://rss.csmonitor.com/feeds/world', 'https://feeds.feedburner.com/ndtvnews-world-news', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5161015&q=site:https%3A%2F%2Fthedetrend.com%2Ffeed%2F', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5145728&q=site:https%3A%2F%2Fweb.neduwealth.com%2Ffeeds%2Fposts%2Fdefault', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5294610&q=site:https%3A%2F%2Finternewscast.com%2Ffeed%2F', 'https://rss.feedspot.com/?_src=footer&_orgin=world_news_rss_feeds', 'https://rss.csmonitor.com/feeds/world', 'https://www.feedspot.com/infiniterss.php?_src=feed_title&followfeedid=5082920&q=site:https%3A%2F%2Famnews247.com%2Ffeed%2F']
+# Prompt for search term
+query = input("Enter search term here: ").lower()
 
-query = input('Enter search term here: ').lower()
+# Prepare CSV output
+csv_file = "rss_search_results.csv"
+fieldnames = ["title", "link", "description"]
 
-for rss_link in links:
-    feed = feedparser.parse(rss_link)
-    for entry in feed.entries:
-        if query in entry.title.lower():
-            title = entry.get('title', 'Unknown title')
-            entry_link = entry.get('link', 'Unknown link')
-            description = entry.get('description', 'No description available')
+matches = []
 
-            print(f'Title: {title}')
-            print(f'Link: {entry_link}')
-            print(f'Description: {description}')
-            print('------------------------')
+for rss_link in links:  # iterate over the actual feed URLs
+    try:
+        feed = feedparser.parse(rss_link)
+        if feed.bozo:
+            print(f"[!] Warning: malformed feed {rss_link}")
+        for entry in feed.entries:
+            title = entry.get("title", "")
+            description = entry.get("description", "")
+            link = entry.get("link", "")
+            if query in title.lower():
+                print(f"Title: {title}")
+                print(f"Link: {link}")
+                print(f"Description: {description[:300]}...\n{'-'*60}")
+                matches.append({"title": title, "link": link, "description": description})
+    except Exception as e:
+        print(f"[!] Failed to fetch {rss_link}: {e}")
+
+# Export to CSV
+if matches:
+    try:
+        with open(csv_file, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=fieldnames)
+            writer.writeheader()
+            writer.writerows(matches)
+        print(f"\n[*] {len(matches)} matching articles saved to '{os.path.abspath(csv_file)}'")
+    except Exception as e:
+        print(f"[!] Failed to write CSV: {e}")
+else:
+    print("No matching articles found.")
