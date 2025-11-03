@@ -2,47 +2,70 @@ from PIL import Image
 import exifread
 
 def get_basic_metadata(image_path):
-    with Image.open(image_path) as img:
-        print('Basic Image Information:')
-        print(f'Image Format: {img.format}')
-        print(f'Image Size: {img.size} pixels')
-        print(f'Image Mode: {img.mode}')
+    """Prints basic image information."""
+    try:
+        with Image.open(image_path) as img:
+            print("\nBasic Image Information:")
+            print(f"Format: {img.format}")
+            print(f"Size: {img.size} pixels")
+            print(f"Mode: {img.mode}")
+    except Exception as e:
+        print(f"Error opening image: {e}")
+
+
+def convert_to_degrees(value):
+    """
+    Helper to convert EXIF GPS coordinates to decimal degrees.
+    """
+    d = float(value.values[0].num) / float(value.values[0].den)
+    m = float(value.values[1].num) / float(value.values[1].den)
+    s = float(value.values[2].num) / float(value.values[2].den)
+    return d + (m / 60.0) + (s / 3600.0)
+
 
 def get_exif_data(image_path):
-    """
-    Extracts and prints EXIF metadata and GPS information from an image file.
-    Args:
-        image_path (str): The path to the image file from which to extract EXIF data.
-    Returns:
-        None
-    Prints:
-        - Selected EXIF metadata fields such as camera make, model, date/time, aperture, exposure time, ISO, focal length, and lens model.
-        - GPS latitude and longitude information if available.
-    Requires:
-        - The 'exifread' library for processing EXIF data.
-    """
-    with open(image_path, 'rb') as img_file:
-        tags = exifread.process_file(img_file)
+    """Extracts and prints EXIF metadata and GPS information."""
+    try:
+        with open(image_path, 'rb') as img_file:
+            tags = exifread.process_file(img_file, details=False)
 
-        print('Exif Metadata:')
+        print("\nEXIF Metadata:")
         exif_keys = [
             'Image Make', 'Image Model', 'Image DateTime',
-            'Exif FNumber','Exif ExposureTime','Exif ISOSpeedRatings',
-            'ExifFocalLength','Exif LensModel'
+            'EXIF FNumber', 'EXIF ExposureTime', 'EXIF ISOSpeedRatings',
+            'EXIF FocalLength', 'EXIF LensModel'
         ]
 
         for tag in exif_keys:
             if tag in tags:
-                print(f'{tag}: {tags[tag]}')
+                print(f"{tag}: {tags[tag]}")
 
-        print('GPS Information:')
-        gps_latitude = tags.get('GPS GPSLatitude')
-        gps_longitude = tags.get('GPS GPSLongitude')
+        # GPS Information
+        gps_lat = tags.get('GPS GPSLatitude')
+        gps_lat_ref = tags.get('GPS GPSLatitudeRef')
+        gps_lon = tags.get('GPS GPSLongitude')
+        gps_lon_ref = tags.get('GPS GPSLongitudeRef')
 
-        if gps_latitude and gps_longitude:
-            print(f'Latitude: {gps_latitude}')
-            print(f'Longitude: {gps_longitude}')
+        if gps_lat and gps_lon and gps_lat_ref and gps_lon_ref:
+            lat = convert_to_degrees(gps_lat)
+            lon = convert_to_degrees(gps_lon)
 
-image_path = input('Enter the path to the image file: ')
-get_basic_metadata(image_path)
-get_exif_data(image_path)
+            if str(gps_lat_ref) != 'N':
+                lat = -lat
+            if str(gps_lon_ref) != 'E':
+                lon = -lon
+
+            print("\nGPS Information:")
+            print(f"Latitude: {lat:.6f}")
+            print(f"Longitude: {lon:.6f}")
+        else:
+            print("\nNo GPS data found.")
+
+    except Exception as e:
+        print(f"Error reading EXIF data: {e}")
+
+
+if __name__ == "__main__":
+    image_path = input("Enter the path to the image file: ").strip().strip('"')
+    get_basic_metadata(image_path)
+    get_exif_data(image_path)
