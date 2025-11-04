@@ -1,7 +1,14 @@
+# --- Compatibility fix for Python 3.10+ and pygooglenews / feedparser ---
+import collections
+if not hasattr(collections, 'Callable'):
+    import collections.abc
+    collections.Callable = collections.abc.Callable
+# ------------------------------------------------------------------------
+
 from pygooglenews import GoogleNews
 from datetime import datetime, timedelta
 import pandas as pd
-from bs4 import BeautifulSoup  # pip install beautifulsoup4
+from bs4 import BeautifulSoup
 
 def clean_html(raw_html):
     """Remove HTML tags and trim extra whitespace."""
