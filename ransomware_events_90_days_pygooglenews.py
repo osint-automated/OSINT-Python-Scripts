@@ -9,6 +9,7 @@ from pygooglenews import GoogleNews
 from datetime import datetime, timedelta
 import pandas as pd
 from bs4 import BeautifulSoup
+from dateutil import parser as dateparser
 
 def clean_html(raw_html):
     """Remove HTML tags and trim extra whitespace."""
@@ -44,6 +45,7 @@ def search_recent_news(sector):
                 continue
 
             for item in entries:
+                # Source extraction
                 source = None
                 if hasattr(item, "source") and item.source:
                     if isinstance(item.source, dict):
@@ -51,13 +53,27 @@ def search_recent_news(sector):
                     else:
                         source = str(item.source)
 
+                # Description cleanup
                 description = getattr(item, "summary", "") or getattr(item, "description", "")
                 clean_description = clean_html(description)
+
+                # Robust date parsing
+                published_date = None
+                if hasattr(item, "published_parsed") and item.published_parsed:
+                    published_date = datetime(*item.published_parsed[:6])
+                elif hasattr(item, "updated_parsed") and item.updated_parsed:
+                    published_date = datetime(*item.updated_parsed[:6])
+                else:
+                    date_str = getattr(item, "published", "") or getattr(item, "updated", "")
+                    try:
+                        published_date = dateparser.parse(date_str)
+                    except Exception:
+                        published_date = None
 
                 all_articles.append({
                     "Country": country_name,
                     "Source": source,
-                    "Date": getattr(item, "published", ""),
+                    "Date": published_date,
                     "Title": getattr(item, "title", ""),
                     "Description": clean_description,
                     "Link": getattr(item, "link", "")
@@ -75,12 +91,9 @@ def search_recent_news(sector):
     # Convert to DataFrame
     df = pd.DataFrame(all_articles)
 
-    # Sort by date
-    try:
-        df["Date"] = pd.to_datetime(df["Date"], errors="coerce")
-        df = df.sort_values("Date", ascending=False)
-    except Exception:
-        pass
+    # Sort by date safely
+    df["Date"] = pd.to_datetime(df["Date"], errors="coerce", utc=True)
+    df = df.sort_values("Date", ascending=False)
 
     # Remove duplicates based on Title and Link
     df = df.drop_duplicates(subset=["Title", "Link"], keep="first")
