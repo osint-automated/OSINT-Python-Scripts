@@ -32,9 +32,11 @@ click==8.3.0
 click-plugins==1.1.1.2
 colorama==0.4.6
 comm==0.2.3
+contourpy==1.3.3
 crawlee==1.0.2
 cryptography==46.0.2
 css-html-js-minify==2.5.5
+cycler==0.12.1
 dateparser==1.2.2
 debugpy==1.8.17
 decorator==5.2.1
@@ -87,6 +89,7 @@ jiter==0.11.0
 joblib==1.5.2
 json5==0.12.1
 jsonpatch==1.33
+jsonpickle==4.1.1
 jsonpointer==3.0.0
 jsonschema==4.25.1
 jsonschema-specifications==2025.9.1
@@ -103,6 +106,7 @@ jupyterlab_pygments==0.3.0
 jupyterlab_server==2.27.3
 jupyterlab_widgets==3.0.15
 keras==3.12.0
+kiwisolver==1.4.9
 langchain-core==0.3.79
 langchain-openai==0.3.35
 langsmith==0.4.34
@@ -113,6 +117,7 @@ lxml==6.0.2
 Markdown==3.9
 markdown-it-py==4.0.0
 MarkupSafe==3.0.3
+matplotlib==3.10.7
 matplotlib-inline==0.1.7
 mdurl==0.1.2
 mistune==3.1.4
@@ -169,6 +174,7 @@ pydantic_core==2.33.2
 pydeck==0.9.1
 pyee==13.0.0
 Pygments==2.19.2
+pygooglenews==0.1.3
 PyJWT==2.10.1
 pyparsing==3.2.5
 PyPDF2==3.0.1
