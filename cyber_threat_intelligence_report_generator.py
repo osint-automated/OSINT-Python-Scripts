@@ -14,12 +14,12 @@ MAX_ARTICLES_PER_QUERY = 100
 MAX_PAGES = 1
 
 access_date = datetime.date.today()
-seven_days_ago = access_date - datetime.timedelta(days=7)
+x_days_ago = access_date - datetime.timedelta(days=3)
 
-report_30_days_ago_date_api = seven_days_ago.strftime("%Y-%m-%d")
+report_30_days_ago_date_api = x_days_ago.strftime("%Y-%m-%d")
 report_todays_date_api = access_date.strftime("%Y-%m-%d")
 
-report_30_days_ago_date_display = seven_days_ago.strftime("%d %B %Y")
+report_30_days_ago_date_display = x_days_ago.strftime("%d %B %Y")
 report_todays_date_display = access_date.strftime("%d %B %Y")
 reporting_period_display = f"{report_30_days_ago_date_display} - {report_todays_date_display}"
 
@@ -63,7 +63,7 @@ def generate_executive_summary(text_for_summary: str) -> str:
                 "Provide an executive-level overview summarizing the following set of CTI findings. "
                 "Write one concise paragraph capturing key trends and significant events. "
                 "Maintain a factual and technical tone, active voice, and no assessments or predictions. "
-                "ANY DATES REFERENCED SHOULD BE STRUCTURED AS DAY MONTH I.E. 23 OCTOBER."
+                "ANY DATES REFERENCED SHOULD BE STRUCTURED AS DAY MONTH I.E. 23 October."
                 "EACH SUMMARY SHOULD BEGIN WITH 'During the reporting period, ..."
             )},
             {"role": "user", "content": text_for_summary},
@@ -81,7 +81,7 @@ def generate_overall_summary(all_summaries: list) -> str:
                 "Provide an executive-level overview summarizing the following set of CTI findings. "
                 "Write one concise paragraph capturing key trends and significant events. "
                 "Maintain a factual and technical tone, active voice, and no assessments or predictions. "
-                "ANY DATES REFERENCED SHOULD BE STRUCTURED AS DAY MONTH I.E. 23 OCTOBER."
+                "ANY DATES REFERENCED SHOULD BE STRUCTURED AS DAY MONTH I.E. 23 October."
                 "EACH SUMMARY SHOULD BEGIN WITH 'During the reporting period, ..."
             )},
             {"role": "user", "content": combined_text},
