@@ -44,6 +44,20 @@ def generate_summary(results, openai_api_key):
     return response.content
 
 
+def generate_executive_summary(results, openai_api_key):
+    """Generate a concise executive summary from multiple OSINT summaries."""
+    llm = ChatOpenAI(model='gpt-4o-mini', openai_api_key=openai_api_key)
+    prompt = (
+        "Take the following OSINT summaries and generate a concise executive summary paragraph. "
+        "Active voice, all facts, no fluffy language, past tense."
+        "Focus on the most critical military and geopolitical updates only, using clear and factual language. "
+        "Keep it concise and high-level.\n\n"
+        f"{results}"
+    )
+    response = llm.invoke(prompt)
+    return response.content
+
+
 def generate_html_report(date_of_access, date_of_information, reporting_period_start, reporting_period_end,
                          combatant_commands, executive_summary, individual_outputs):
     """Generate HTML content following the provided OSINT report structure exactly."""
@@ -97,11 +111,11 @@ def main():
 
     # Search terms mapped to combatant commands
     search_terms = {
-        "SOUTHCOM": "Venezuela OR Colombia OR Latin America AND (Russia OR United States OR military)",
+        "SOUTHCOM": "Venezuela AND (Russia OR United States OR USA OR US OR U.S.)",
         "EUCOM": "Ukraine AND Russia OR NATO",
         "PACOM": "China OR North Korea OR Taiwan OR South China Sea",
         "CENTCOM": "Iran OR Israel OR Gaza OR Hamas OR Lebanon OR Syria",
-        "AFRICOM": 'Sudan OR "South Sudan" OR Libya OR Mali OR Niger OR Chad OR "Burkina Faso" OR "Central African Republic" OR Somalia OR Ethiopia OR Eritrea OR Djibouti OR Mozambique OR "Democratic Republic of Congo" OR "Equatorial Guinea" OR Angola OR "South Africa" OR Zimbabwe OR Cameroon OR Algeria'
+        "AFRICOM": 'Sudan OR "South Sudan" OR Nigeria OR Libya OR Mali OR Niger OR Chad OR "Burkina Faso" OR "Central African Republic" OR Somalia OR Ethiopia OR Eritrea OR Djibouti OR Mozambique OR "Democratic Republic of Congo" OR "Equatorial Guinea" OR Angola OR "South Africa" OR Zimbabwe OR Cameroon OR Algeria'
     }
 
     all_summaries = []
@@ -128,10 +142,10 @@ def main():
         else:
             individual_outputs.append(f"{command}: No significant updates found.")
 
-    # Generate executive summary combining all
+    # Generate concise executive summary combining all
     print("\n🧠 Generating executive summary...")
     executive_summary_input = "\n\n".join(all_summaries)
-    executive_summary = generate_summary(executive_summary_input, openai_api_key)
+    executive_summary = generate_executive_summary(executive_summary_input, openai_api_key)
 
     # Create HTML report
     html_report = generate_html_report(
