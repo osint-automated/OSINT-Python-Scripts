@@ -151,7 +151,7 @@ hr {{
 
     html_content += "</ul>\n</body>\n</html>"
 
-    with open(r'C:\Users\thisi\Desktop\Python_VSCode\CTI Report Generator\Cyber_Threat_Intelligence_Report.html', "w", encoding="utf-8") as f:
+    with open('Cyber_Threat_Intelligence_Report.html', "w", encoding="utf-8") as f:
         f.write(html_content)
 
     print(f"Full HTML report saved as {filename}")
@@ -181,7 +181,7 @@ if __name__ == "__main__":
 
     overall_summary = generate_overall_summary(all_summaries)
 
-    with open(r'C:\Users\thisi\Desktop\Python_VSCode\CTI Report Generator\Cyber Threat Intelligence Report.txt', 'a', encoding='utf-8') as f:
+    with open('Cyber Threat Intelligence Report.txt', 'a', encoding='utf-8') as f:
         f.write(f"Cyber Threat Intelligence (CTI) Report\n")
         f.write(f"Date of Access: {report_todays_date_display}\n")
         f.write(f"Date of Information: {report_todays_date_display}\n")

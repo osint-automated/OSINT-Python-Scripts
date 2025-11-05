@@ -165,15 +165,10 @@ def main():
     )
 
     # Save report
-    save_path = r"C:\Users\thisi\Desktop\Python_VSCode\streamlit app" #change path to fit users needs
-    os.makedirs(save_path, exist_ok=True)
-    report_path = os.path.join(save_path, "osint_report.html")
-
-    with open(report_path, "w", encoding="utf-8") as f:
+    with open('osint_report.html', "w", encoding="utf-8") as f:
         f.write(html_report)
 
-    print(f"\nReport generated successfully: {report_path}")
-
+    print(f"\nReport generated successfully: 'osint_report.html'")
 
 if __name__ == "__main__":
     main()
