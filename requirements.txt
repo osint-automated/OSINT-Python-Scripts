@@ -23,20 +23,25 @@ babel==2.17.0
 beautifulsoup4==4.14.2
 bleach==6.2.0
 blinker==1.9.0
+blis==1.3.0
 bs4==0.0.2
 cachetools==6.2.1
+catalogue==2.0.10
 certifi==2025.10.5
 cffi==2.0.0
 charset-normalizer==3.4.3
 click==8.3.0
 click-plugins==1.1.1.2
+cloudpathlib==0.23.0
 colorama==0.4.6
 comm==0.2.3
+confection==0.1.5
 contourpy==1.3.3
 crawlee==1.0.2
 cryptography==46.0.2
 css-html-js-minify==2.5.5
 cycler==0.12.1
+cymem==2.0.11
 dateparser==1.2.2
 debugpy==1.8.17
 decorator==5.2.1
@@ -45,6 +50,7 @@ distro==1.9.0
 dnspython==2.8.0
 docstring_parser==0.17.0
 docutils==0.21.2
+en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.8.0/en_core_web_sm-3.8.0-py3-none-any.whl#sha256=1932429db727d4bff3deed6b34cfc05df17794f4a52eeb26cf8928f7c1a0fb85
 executing==2.2.1
 ExifRead==3.5.1
 fastjsonschema==2.21.2
@@ -109,11 +115,14 @@ keras==3.12.0
 kiwisolver==1.4.9
 langchain-core==0.3.79
 langchain-openai==0.3.35
+langcodes==3.5.0
 langsmith==0.4.34
+language_data==1.3.0
 lark==1.3.0
 lazy-object-proxy==1.12.0
 libclang==18.1.1
 lxml==6.0.2
+marisa-trie==1.3.1
 Markdown==3.9
 markdown-it-py==4.0.0
 MarkupSafe==3.0.3
@@ -126,6 +135,7 @@ mmh3==5.2.0
 more-itertools==10.8.0
 mpmath==1.3.0
 multidict==6.7.0
+murmurhash==1.0.13
 mutagen==1.47.0
 namex==0.1.0
 narwhals==2.9.0
@@ -134,7 +144,6 @@ nbconvert==7.16.6
 nbformat==5.10.4
 nest-asyncio==1.6.0
 networkx==3.5
-newsapi==0.1.1
 newsapi-python==0.2.7
 newsdataapi==0.1.26
 nltk==3.9.2
@@ -155,6 +164,7 @@ parso==0.8.5
 pillow==11.3.0
 platformdirs==4.5.0
 plotly==6.3.1
+preshed==3.0.10
 prometheus_client==0.23.1
 prompt_toolkit==3.0.52
 propcache==0.4.1
@@ -205,12 +215,17 @@ Send2Trash==1.8.3
 sentence-transformers==5.1.2
 setuptools==80.9.0
 sgmllib3k==1.0.0
+shellingham==1.5.4
 shodan==1.31.0
 six==1.17.0
+smart_open==7.4.4
 smmap==5.0.2
 sniffio==1.3.1
 snowballstemmer==3.0.1
 soupsieve==2.8
+spacy==3.8.7
+spacy-legacy==3.0.12
+spacy-loggers==1.0.5
 Sphinx==8.2.3
 sphinx-material==0.0.36
 sphinxcontrib-applehelp==2.0.0
@@ -220,6 +235,7 @@ sphinxcontrib-jsmath==1.0.1
 sphinxcontrib-qthelp==2.0.0
 sphinxcontrib-serializinghtml==2.0.0
 sphinxcontrib-trio==1.1.2
+srsly==2.5.1
 stack-data==0.6.3
 streamlit==1.50.0
 sympy==1.14.0
@@ -231,6 +247,7 @@ termcolor==3.2.0
 terminado==0.18.1
 text-unidecode==1.3
 tf_keras==2.20.1
+thinc==8.3.6
 threadpoolctl==3.6.0
 tiktoken==0.12.0
 tinycss2==1.4.0
@@ -243,6 +260,7 @@ tqdm==4.67.1
 traitlets==5.14.3
 transformers==4.57.0
 twilio==9.8.3
+typer==0.20.0
 types-python-dateutil==2.9.0.20251008
 typing-inspection==0.4.2
 typing_extensions==4.15.0
@@ -252,8 +270,10 @@ Unidecode==1.4.0
 uri-template==1.3.0
 uritemplate==4.2.0
 urllib3==2.5.0
+wasabi==1.1.3
 watchdog==6.0.0
 wcwidth==0.2.14
+weasel==0.4.1
 webcolors==24.11.1
 webencodings==0.5.1
 websocket-client==1.9.0
