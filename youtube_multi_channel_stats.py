@@ -1,3 +1,9 @@
+"""
+This script retrieves and displays statistics for multiple specified YouTube channels.
+It uses a predefined list of YouTube channel IDs, fetches data for each channel
+using the Google API client for YouTube, and then prints details such as channel name,
+subscriber count, view count, and video count in a pandas DataFrame.
+"""
 from googleapiclient.discovery import build
 import pandas as pd
 import os

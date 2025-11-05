@@ -1,3 +1,9 @@
+"""
+This script asynchronously fetches and searches RSS feeds from various Russian news sources.
+It prompts the user for a search term, gathers the news articles, filters them
+based on the query, and then displays the results. The script can also export
+the findings to JSON and CSV files.
+"""
 import asyncio
 import aiohttp
 import feedparser

@@ -1,3 +1,9 @@
+"""
+This script retrieves and displays statistics for a specified YouTube channel.
+It prompts the user for a YouTube channel ID, uses the Google API client for YouTube
+to fetch channel data, and then prints details such as channel name, subscriber count,
+view count, and video count.
+"""
 from googleapiclient.discovery import build
 import os
 from dotenv import load_dotenv

@@ -1,3 +1,9 @@
+"""
+This script performs sentiment analysis on text content from a user-specified file.
+It reads the text, breaks it into chunks, and uses a pre-trained sentiment analysis
+model from the Hugging Face Transformers library to determine the sentiment of each chunk.
+Finally, it calculates and prints an average sentiment score and the overall sentiment label.
+"""
 from transformers import pipeline
 import textwrap
 

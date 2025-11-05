@@ -1,3 +1,8 @@
+"""
+This script searches for news articles using the NewsData.io API.
+It prompts the user for a search term, queries the API for the latest news
+matching the term, and then prints the title and link of each article found.
+"""
 from newsdataapi import NewsDataApiClient
 import os
 from dotenv import load_dotenv

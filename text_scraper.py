@@ -1,3 +1,9 @@
+"""
+This script scrapes the main textual content from a given webpage, attempting to
+filter out irrelevant elements like navigation, footers, and ads.
+It prompts the user for a URL, fetches the HTML, extracts the most prominent text,
+prints a preview, and saves the full extracted text to a file named 'main_article_text.txt'.
+"""
 import requests
 from bs4 import BeautifulSoup
 

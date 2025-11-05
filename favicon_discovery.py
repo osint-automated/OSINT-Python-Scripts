@@ -1,3 +1,9 @@
+"""
+This script discovers domains that share the same favicon hash.
+It takes a favicon hash as input, queries the Shodan API to find matching domains,
+and then prints the list of related domains found. It can also resolve IP addresses
+to domain names if direct hostnames are not available.
+"""
 import requests
 import mmh3
 import shodan

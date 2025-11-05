@@ -1,3 +1,8 @@
+"""
+This script extracts and displays metadata from a variety of file types.
+It prompts the user for a file path and then uses libraries like mutagen, Pillow,
+and PyPDF2 to extract and print metadata from media files, images, and PDFs.
+"""
 import os
 import datetime
 from mutagen import File

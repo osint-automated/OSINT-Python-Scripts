@@ -1,3 +1,8 @@
+"""
+This script queries the DNSDumpster API for information about a given domain.
+It takes a domain name as input, makes an API request using a pre-configured API key,
+parses the JSON response, and extracts and prints all unique IP addresses found in the data.
+"""
 import subprocess
 import json
 import os

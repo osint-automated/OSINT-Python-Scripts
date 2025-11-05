@@ -1,3 +1,8 @@
+"""
+This script fetches news articles based on a user-provided query using the Currents API,
+and then generates a concise summary of the articles using the Anthropic Claude AI model.
+It prompts the user for a search term, retrieves relevant news, and prints the AI-generated summary.
+"""
 import requests
 import anthropic
 import os

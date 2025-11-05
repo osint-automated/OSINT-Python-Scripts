@@ -1,3 +1,9 @@
+"""
+This script checks if a list of phone numbers are VoIP numbers using the Twilio API.
+It reads phone numbers from a user-specified CSV file, processes them concurrently
+using a thread pool, and writes the results (phone number and whether it's VoIP)
+to a new CSV file.
+"""
 import csv
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from twilio.rest import Client

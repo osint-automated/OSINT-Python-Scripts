@@ -1,3 +1,8 @@
+"""
+This script performs basic site enumeration by analyzing a website's robots.txt and sitemap.xml files.
+It prompts the user for a domain, fetches and parses the robots.txt to identify disallowed paths,
+and then fetches and parses the sitemap.xml to extract listed URLs. The findings are printed to the console.
+"""
 import requests
 from urllib.parse import urljoin, urlparse
 from bs4 import BeautifulSoup

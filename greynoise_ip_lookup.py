@@ -1,3 +1,8 @@
+"""
+This script looks up an IP address in the GreyNoise Community API.
+It prompts the user for an IP address, queries the GreyNoise API with a
+pre-configured API key, and prints the raw JSON response to the console.
+"""
 import requests
 import os
 from dotenv import load_dotenv

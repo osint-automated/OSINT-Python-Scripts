@@ -1,3 +1,8 @@
+"""
+This script downloads top-level comments from a specified YouTube video.
+It prompts the user for a YouTube video ID, uses the Google API client for YouTube
+to fetch comments, and then displays them in a pandas DataFrame.
+"""
 from googleapiclient.discovery import build
 import pandas as pd
 import os

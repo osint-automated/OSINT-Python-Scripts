@@ -1,3 +1,9 @@
+"""
+This script generates a comprehensive Cyber Threat Intelligence (CTI) report for a given IP address.
+It gathers data from various sources including ipinfo.io, ProxyCheck, Shodan, VirusTotal,
+AbuseIPDB, GreyNoise, AlienVault OTX, and WHOIS. It then uses the OpenAI API to generate
+an executive summary of the findings and saves the detailed report to a text file.
+"""
 import os
 import requests
 import ipaddress

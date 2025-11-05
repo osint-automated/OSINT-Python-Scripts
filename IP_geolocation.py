@@ -1,3 +1,8 @@
+"""
+This script retrieves geolocation information for a given IP address using the ipinfo.io API.
+It prompts the user for an IP address, fetches the data, and then displays details
+such as city, region, country, and ISP.
+"""
 import requests
 import os
 from dotenv import load_dotenv

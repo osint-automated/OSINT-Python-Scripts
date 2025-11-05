@@ -1,3 +1,8 @@
+"""
+This script extracts email addresses from a given URL.
+It prompts the user for a URL, fetches the content of the webpage,
+and uses a regular expression to find and print all unique email addresses.
+"""
 import requests
 import re
 

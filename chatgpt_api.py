@@ -1,3 +1,8 @@
+"""
+This script provides a simple command-line interface to interact with the
+OpenAI GPT-4o-mini model. It prompts the user for input, sends the input to the
+OpenAI API, and prints the model's response.
+"""
 import openai
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 import os

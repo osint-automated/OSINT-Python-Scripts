@@ -1,3 +1,8 @@
+"""
+This script queries the AlienVault OTX API to retrieve information about a given IP address.
+It fetches both direct indicator pulses and search pulses related to the IP,
+then prints the pulse count and details for each unique pulse.
+"""
 import os
 import requests
 from dotenv import load_dotenv

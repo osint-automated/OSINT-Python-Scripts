@@ -1,3 +1,9 @@
+"""
+This script checks if a given IP address is associated with a VPN or proxy service
+using the ProxyCheck.io API. It prompts the user for an IP address, queries the API,
+and then prints whether the IP is a proxy, its risk score, geographical location,
+and the full API response.
+"""
 import proxycheck
 import os
 from dotenv import load_dotenv

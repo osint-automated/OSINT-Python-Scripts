@@ -1,3 +1,8 @@
+"""
+This script scrapes a webpage for all unique hyperlinks.
+It prompts the user for a URL, fetches the HTML content, and then extracts
+and prints all unique 'href' attributes from 'a' tags found on the page.
+"""
 import requests
 from bs4 import BeautifulSoup
 

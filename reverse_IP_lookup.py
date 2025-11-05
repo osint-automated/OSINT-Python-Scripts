@@ -1,3 +1,9 @@
+"""
+This script performs reverse IP lookups and identifies other domains hosted on the same server.
+It takes a single IP address or a file containing a list of IP addresses as input.
+For each IP, it performs a reverse DNS lookup and optionally queries the ViewDNS API
+to find other domains. Results are printed to the console and can be exported to a CSV file.
+"""
 import ipaddress
 import socket
 import requests

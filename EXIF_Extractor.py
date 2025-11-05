@@ -1,3 +1,9 @@
+"""
+This script extracts and displays basic and EXIF metadata from an image file.
+It prompts the user for the path to an image, then prints information such as
+image format, size, and mode, as well as detailed EXIF data including camera
+settings and GPS coordinates if available.
+"""
 from PIL import Image
 import exifread
 

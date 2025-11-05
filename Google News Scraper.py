@@ -1,3 +1,8 @@
+"""
+This script scrapes Google News for articles on a user-provided topic from the last 30 days.
+It uses the pygooglenews library to fetch the news, cleans the article descriptions,
+and then saves the results to a CSV file. A preview of the results is also printed to the console.
+"""
 # --- Compatibility fix for Python 3.10+ and pygooglenews / feedparser ---
 import collections
 if not hasattr(collections, 'Callable'):

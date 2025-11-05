@@ -1,3 +1,10 @@
+"""
+This script analyzes a text file for disinformation and misinformation.
+It reads an article from 'sample_article.txt', preprocesses the text,
+and then uses the OpenAI API (GPT-4o-mini) to identify and analyze
+disinformation narratives. The final analysis is printed to the console and
+saved to 'disinformation_analysis_output.txt'.
+"""
 import re
 import textwrap
 from openai import OpenAI

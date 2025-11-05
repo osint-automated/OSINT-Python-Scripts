@@ -1,3 +1,9 @@
+"""
+This script provides functions to query the OSINT.industries API for various types of information,
+including email, phone number, username, name, and cryptocurrency wallet addresses.
+It requires an API key and allows the user to uncomment and use specific search functions
+to retrieve OSINT data.
+"""
 import requests
 import os
 from dotenv import load_dotenv

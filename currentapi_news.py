@@ -1,3 +1,8 @@
+"""
+This script fetches news articles from the Currents API based on a user-provided query.
+It prompts the user for a search term, retrieves the news from the API, and then
+prints the title, description, link, author, and published date for each article.
+"""
 import requests
 import os
 from dotenv import load_dotenv

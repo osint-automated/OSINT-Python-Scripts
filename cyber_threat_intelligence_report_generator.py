@@ -1,3 +1,9 @@
+"""
+This script generates a Cyber Threat Intelligence (CTI) report.
+It retrieves news articles from the NewsAPI based on a list of CTI-related queries,
+summarizes the articles using the OpenAI API (GPT-4o-mini), and then generates
+a CTI report in both HTML and text formats.
+"""
 # -*- coding: utf-8 -*-
 from newsapi import NewsApiClient
 from openai import OpenAI

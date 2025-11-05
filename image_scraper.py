@@ -1,3 +1,8 @@
+"""
+This script scrapes a webpage for all image tags and extracts their alt text and source links.
+It prompts the user for a URL, fetches the HTML content, and then prints the details
+for each image found.
+"""
 import requests
 from bs4 import BeautifulSoup
 

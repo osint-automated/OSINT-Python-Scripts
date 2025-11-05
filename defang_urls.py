@@ -1,3 +1,8 @@
+"""
+This script reads a list of URLs from a file named 'urls.txt',
+defangs each URL by replacing periods with '[.]', and then prints
+the defanged URLs to the console.
+"""
 def defang(url_list):
     """
     Replaces every '.' in each URL from the input list with '[.]' and prints the modified URLs.

@@ -1,3 +1,9 @@
+"""
+This script fetches and analyzes the HTTP response headers of a given URL.
+It prompts the user for a URL, makes a GET request, and then prints all the
+response headers. It also provides a specific analysis of security-related
+headers like 'Server', 'X-Frame-Options', and 'Content-Security-Policy'.
+"""
 import requests
 
 def analyze_headers(url):

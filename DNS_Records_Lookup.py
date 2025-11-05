@@ -1,3 +1,8 @@
+"""
+This script performs a DNS lookup for a given domain and retrieves A, MX, NS, and TXT records.
+It prompts the user for a domain name, queries the DNS records, and then prints the results
+to the console.
+"""
 import dns.resolver
 import sys
 

@@ -1,3 +1,9 @@
+"""
+This script generates a Global Situation Report (SITREP) by fetching news
+articles from various combatant commands (SOUTHCOM, EUCOM, PACOM, CENTCOM, AFRICOM).
+It uses the NewsAPI to get the news and the OpenAI API (GPT-4o-mini) to generate
+summaries and an executive summary. The final report is saved as an HTML file.
+"""
 from newsapi import NewsApiClient
 from langchain_openai import ChatOpenAI
 from datetime import datetime, timedelta

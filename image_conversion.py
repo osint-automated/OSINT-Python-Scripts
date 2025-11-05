@@ -1,3 +1,8 @@
+"""
+This script converts an image from one format to another.
+It prompts the user for the input image name, the desired output format,
+and then saves the converted image in the same directory.
+"""
 from PIL import Image
 
 def convert_image(input_path, output_path, output_format):

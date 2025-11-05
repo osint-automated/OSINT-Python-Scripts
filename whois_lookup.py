@@ -1,3 +1,9 @@
+"""
+This script performs a WHOIS lookup for a given domain name or IP address.
+It prompts the user for an identifier, retrieves WHOIS information, and then
+prints relevant details such as registrar, creation/expiration dates, name servers,
+and contact emails.
+"""
 import whois
 import ipaddress
 

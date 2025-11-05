@@ -1,3 +1,8 @@
+"""
+This script searches for news articles about ransomware attacks in the US and UK
+from the last 90 days based on a user-provided sector. It uses the pygooglenews
+library to search Google News and saves the results to a CSV file.
+"""
 # --- Compatibility fix for Python 3.10+ and pygooglenews / feedparser ---
 import collections
 if not hasattr(collections, 'Callable'):

@@ -1,3 +1,9 @@
+"""
+This script queries the NewsAPI for articles based on a user-provided search query
+and saves the results to a CSV file. It fetches articles from the last 7 days,
+extracts their source, title, description, and URL, and then stores this information
+in a CSV file named 'newsapi_query_results.csv'.
+"""
 from newsapi import NewsApiClient
 from datetime import datetime, timedelta
 import pandas as pd

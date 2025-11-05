@@ -1,3 +1,9 @@
+"""
+This script downloads YouTube videos using the yt-dlp library.
+It prompts the user for a YouTube video URL, then downloads the video
+to the specified output path (defaulting to the current directory).
+FFMPEG is required for full functionality.
+"""
 import yt_dlp
 
 def download_youtube_video_ydl(url, output_path='.'):

@@ -1,3 +1,8 @@
+"""
+This script performs basic website fingerprinting by analyzing HTTP response headers.
+It prompts the user for a URL, fetches the headers, and then extracts and displays
+information about the server, technologies used, and various security-related headers.
+"""
 import requests
 
 def get_headers(url):

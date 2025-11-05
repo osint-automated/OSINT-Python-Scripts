@@ -1,3 +1,8 @@
+"""
+This script scrapes the Tor66 search engine for .onion links related to a user-provided search string.
+It constructs a search URL, fetches the content, extracts unique .onion links,
+and then prints them to the console.
+"""
 import requests
 from bs4 import BeautifulSoup
 import re

@@ -1,3 +1,8 @@
+"""
+This script extracts and displays the most frequent keywords from a given text file.
+It prompts the user for a file path, reads the text, removes common English stopwords,
+and then counts the occurrences of each word to identify and print the top N keywords.
+"""
 import re
 import nltk
 from collections import Counter

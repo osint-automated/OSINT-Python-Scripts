@@ -1,3 +1,8 @@
+"""
+This script checks a list of IP addresses for VPN or proxy usage
+using the proxycheck.io API. It reads a list of IPs from the `ip_list`
+variable, queries the API for each IP, and prints whether it is a proxy or not.
+"""
 import proxycheck
 import os
 from dotenv import load_dotenv
