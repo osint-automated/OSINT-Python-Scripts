@@ -165,7 +165,7 @@ def main():
     )
 
     # Save report
-    save_path = r"C:\Users\thisi\Desktop\Python_VSCode\venv\streamlit app"
+    save_path = r"C:\Users\thisi\Desktop\Python_VSCode\streamlit app"
     os.makedirs(save_path, exist_ok=True)
     report_path = os.path.join(save_path, "osint_report.html")
 
