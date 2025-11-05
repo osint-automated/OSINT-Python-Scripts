@@ -43,7 +43,7 @@ def generate_summary(results, openai_api_key):
         "military and geopolitical updates, using active voice, all facts, no fluffy language, past tense. "
         "This is for an OSINT report. Ensure that any locations are specified with their state or country "
         "(e.g., Atlanta, Georgia). Any date referenced should be structured as 'day month' (e.g., 24 October). "
-        "Each summary should begin with 'During the reporting period, ...'\n\n"
+        "Each summary should begin with 'During the reporting period, open source reporting indicated.....'\n\n"
         f"{results}"
     )
     response = llm.invoke(prompt)
@@ -134,7 +134,7 @@ def main():
     reporting_period_end = now.strftime("%d %B %Y")
     combatant_commands = ", ".join(search_terms.keys())
 
-    print("🔍 Generating OSINT Report...\n")
+    print("Generating OSINT Report.\n")
 
     # Generate per-command summaries
     for command, query in search_terms.items():
@@ -149,7 +149,7 @@ def main():
             individual_outputs.append(f"{command}: No significant updates found.")
 
     # Generate concise executive summary combining all
-    print("\n🧠 Generating executive summary...")
+    print("\nGenerating executive summary...")
     executive_summary_input = "\n\n".join(all_summaries)
     executive_summary = generate_executive_summary(executive_summary_input, openai_api_key)
 
@@ -172,7 +172,7 @@ def main():
     with open(report_path, "w", encoding="utf-8") as f:
         f.write(html_report)
 
-    print(f"\n✅ Report generated successfully: {report_path}")
+    print(f"\nReport generated successfully: {report_path}")
 
 
 if __name__ == "__main__":
