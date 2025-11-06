@@ -51,19 +51,28 @@ def extract_main_text(url):
         return None
 
 if __name__ == "__main__":
-    url = input("Enter article URL: ").strip()
-    if url:
-        content = extract_main_text(url)
-        if content:
-            print("\n--- Extracted Article Text Preview ---\n")
-            print(content[:2000])  # Preview first 2000 characters
-            print("\n[Text truncated for preview]")
+    urls_input = input("Enter article URLs (separated by commas): ").strip()
+    urls = [url.strip() for url in urls_input.split(',') if url.strip()]
+    
+    if urls:
+        with open("main_article_text.txt", "w", encoding="utf-8") as f:
+            pass  # Create or clear the file
 
-            # Save to file
-            with open("main_article_text.txt", "w", encoding="utf-8") as f:
-                f.write(content)
-            print("\nSaved main article text to 'main_article_text.txt'")
-        else:
-            print("No main article text could be extracted.")
+        for url in urls:
+            print(f"\n--- Processing: {url} ---\n")
+            content = extract_main_text(url)
+            if content:
+                print("\n--- Extracted Article Text Preview ---\n")
+                print(content[:2000])  # Preview first 2000 characters
+                print("\n[Text truncated for preview]")
+
+                # Append to file
+                with open("main_article_text.txt", "a", encoding="utf-8") as f:
+                    f.write(f"--- Content from: {url} ---\n\n")
+                    f.write(content)
+                    f.write("\n\n--- End of Content ---\n\n")
+                print(f"\nAppended main article text from {url} to 'main_article_text.txt'")
+            else:
+                print(f"No main article text could be extracted from {url}.")
     else:
-        print("No URL provided.")
+        print("No URLs provided.")

@@ -19,7 +19,7 @@ def email_search(email):
   response = requests.get(url, headers=headers)
   print(response.text)
 
-def phone_search():
+def phone_search(phone):
   url = f"https://api.osint.industries/v2/request?type=phone&query={phone}&timeout=60"
   headers = {
       "api-key": api_key,
@@ -57,18 +57,22 @@ def wallet_search(wallet):
 
 api_key = os.getenv('osint_industries_api_key')
 
-'''
-select which search you want to run and remove the comments to run it.
-'''
+email = input('Enter email here: ')
+if email:
+    email_search(email)
 
-#email = input('Enter email here: ')
-#phone = input('Enter phone number here: ')
-#username = input('Enter username here: ')
-#name = input('Enter name here: ')
-#wallet = input('Enter wallet address here: ')
+phone = input('Enter phone number here: ')
+if phone:
+    phone_search(phone)
 
-#email_search(email)
-#phone_search()
-#username_search(username)
-#name_search(name)
-#wallet_search(wallet)
+username = input('Enter username here: ')
+if username:
+    username_search(username)
+
+name = input('Enter name here: ')
+if name:
+    name_search(name)
+
+wallet = input('Enter wallet address here: ')
+if wallet:
+    wallet_search(wallet)
