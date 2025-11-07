@@ -83,7 +83,7 @@ def search_recent_news():
             entries = search_results.get('entries', [])
 
         if not entries:
-            print("No articles found globally for the last 30 days.")
+            print("No articles found globally.")
             return
 
         for item in entries:
@@ -123,7 +123,7 @@ def search_recent_news():
         return
 
     if not all_articles:
-        print("\nNo articles found in the last 30 days.")
+        print("\nNo articles found.")
         return
 
     # Convert to DataFrame

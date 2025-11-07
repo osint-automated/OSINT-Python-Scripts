@@ -109,7 +109,7 @@ def search_recent_news(sector):
         return
 
     if not all_articles:
-        print("\nNo articles found for the specified sector in the last 90 days.")
+        print("\nNo articles found for the specified sector.")
         return
 
     # Convert to DataFrame

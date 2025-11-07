@@ -66,7 +66,7 @@ def search_recent_news(sector):
 
 
     for country_name, country_code in countries.items():
-        print(f"\nSearching for '{query}' in {country_name} (last 90 days)...")
+        print(f"\nSearching for '{query}' in {country_name}...")
         gn = GoogleNews(lang='en', country=country_code)
         try:
             # Use 'when' parameter for a 90-day window to avoid date format issues
@@ -116,7 +116,7 @@ def search_recent_news(sector):
             print(f"An error occurred while searching {country_name}: {e}")
 
     if not all_articles:
-        print("\nNo articles found for the specified sector in the last 90 days.")
+        print("\nNo articles found for the specified sector.")
         return
 
     # Convert to DataFrame

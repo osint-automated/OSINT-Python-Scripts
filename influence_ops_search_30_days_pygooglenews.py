@@ -153,7 +153,7 @@ def search_recent_influence_ops():
         return
 
     if not all_articles:
-        print("\nNo articles passed filtering for influence operations in the last {WINDOW_DAYS} days.")
+        print("\nNo articles passed filtering for influence operations.")
         return
 
     # Convert to DataFrame and clean up
