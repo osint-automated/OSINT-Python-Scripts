@@ -37,18 +37,19 @@ def clean_html(raw_html):
 
 
 def build_apt_query(sector):
-    """Build a generalized APT-related query combining common campaign terms."""
+    """Build a safe APT-related query without outer parentheses to avoid regex errors."""
     keywords = [
-        '"APT campaign"',
-        '"advanced persistent threat"',
-        '"cyber espionage campaign"',
-        '"nation-state cyber attack"',
-        '"state-sponsored hacking"',
-        '"cyber operation"',
-        '"espionage operation"',
+        "APT campaign",
+        "advanced persistent threat",
+        "cyber espionage campaign",
+        "nation-state cyber attack",
+        "state-sponsored hacking",
+        "cyber operation",
+        "espionage operation",
     ]
-    query = "(" + " OR ".join(keywords) + f") {sector}"
-    return query
+    # Join with OR and keep quotes around each phrase
+    keyword_query = " OR ".join(f'"{kw}"' for kw in keywords)
+    return f"{keyword_query} {sector}"  # No outer parentheses
 
 
 def search_recent_news(sector):
@@ -60,11 +61,9 @@ def search_recent_news(sector):
     gn = GoogleNews(lang='en')
 
     try:
-        # Step 1: Perform search (without date filters — they often break)
         search_results = gn.search(query)
         entries = search_results.get('entries', [])
 
-        # Step 2: Fallback to broader APT search if no results
         if not entries:
             print("No direct matches, retrying with broader 'APT' query...")
             fallback_query = f'"APT" {sector}'
@@ -75,10 +74,8 @@ def search_recent_news(sector):
             print("No articles found globally.")
             return
 
-        # Step 3: Define 90-day cutoff
         ninety_days_ago = datetime.utcnow() - timedelta(days=90)
 
-        # Step 4: Parse results
         for item in entries:
             source = None
             if hasattr(item, "source") and item.source:
@@ -120,7 +117,7 @@ def search_recent_news(sector):
         print(f"An error occurred during global search: {e}")
         return
 
-    # Step 5: Build DataFrame and export
+    # Build DataFrame and export
     df = pd.DataFrame(all_articles)
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce", utc=True)
     df = df.sort_values("Date", ascending=False)
@@ -132,7 +129,7 @@ def search_recent_news(sector):
 
     print(f"\nSaved {len(df)} unique articles to '{csv_filename}'")
 
-    # Step 6: Preview results
+    # Preview results
     print("\n--- Results Preview ---")
     for _, row in df.head(10).iterrows():
         print(f"Date: {row['Date']}")
