@@ -16,20 +16,11 @@ from pygooglenews import GoogleNews
 from datetime import datetime, timedelta
 import pandas as pd
 from bs4 import BeautifulSoup
-import feedparser
 import dateparser
-
-# Register dateparser as a date handler for feedparser
-def dateparser_tuple(date_string):
-    dt_object = dateparser.parse(date_string)
-    if dt_object:
-        return dt_object.utctimetuple()
-    return None
-
-feedparser.registerDateHandler(dateparser_tuple)
 
 WINDOW_DAYS = 90
 COUNTRIES = {"US": "us", "UK": "gb"}
+
 
 def clean_html(raw_html):
     """Remove HTML tags and trim extra whitespace."""
@@ -37,6 +28,7 @@ def clean_html(raw_html):
         return ""
     soup = BeautifulSoup(raw_html, "html.parser")
     return soup.get_text().strip()
+
 
 def build_query(sector):
     """Builds a search query for ransomware-related articles in a given sector."""
@@ -49,10 +41,31 @@ def build_query(sector):
         '"cyber extortion"',
     ]
     keyword_query = " OR ".join(keywords)
-    sector = sector.strip()
-    return f"({keyword_query}) {sector}" if sector else f"({keyword_query})"
+    return f"({keyword_query}) {sector}"
 
-def search_recent_news(sector=""):
+
+def parse_date(item):
+    """Robustly parse published/updated dates using multiple fallbacks."""
+    published_date = None
+    try:
+        if hasattr(item, "published_parsed") and item.published_parsed:
+            published_date = datetime(*item.published_parsed[:6])
+        elif hasattr(item, "updated_parsed") and item.updated_parsed:
+            published_date = datetime(*item.updated_parsed[:6])
+        elif hasattr(item, "published") and item.published:
+            dt = dateparser.parse(item.published)
+            if dt:
+                published_date = dt
+        elif hasattr(item, "updated") and item.updated:
+            dt = dateparser.parse(item.updated)
+            if dt:
+                published_date = dt
+    except Exception:
+        published_date = None
+    return published_date
+
+
+def search_recent_news(sector):
     """Searches Google News for ransomware attacks by sector in the last 90 days (US + UK)."""
     query = build_query(sector)
     all_articles = []
@@ -81,16 +94,10 @@ def search_recent_news(sector=""):
                 description = getattr(item, "summary", "") or getattr(item, "description", "") or ""
                 clean_description = clean_html(description)
 
-                # Robust date parsing
-                published_date = None
-                if hasattr(item, "published_parsed") and item.published_parsed:
-                    published_date = datetime(*item.published_parsed[:6])
-                elif hasattr(item, "updated_parsed") and item.updated_parsed:
-                    published_date = datetime(*item.updated_parsed[:6])
-                else:
-                    published_date = dateparser.parse(getattr(item, "published", "") or getattr(item, "updated", ""))
+                published_date = parse_date(item)
 
-                if not published_date or published_date < cutoff_date:
+                # Skip old articles
+                if published_date and published_date < cutoff_date:
                     continue
 
                 source = ""
@@ -126,8 +133,7 @@ def search_recent_news(sector=""):
 
     # Export results
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    sector_safe = sector.replace(" ", "_") if sector else "general"
-    csv_filename = f"ransomware_news_{sector_safe}_{timestamp}.csv"
+    csv_filename = f"ransomware_news_{sector.replace(' ', '_')}_{timestamp}.csv"
     df.to_csv(csv_filename, index=False, encoding="utf-8-sig")
     print(f"\nSaved {len(df)} unique articles to '{csv_filename}'")
 
@@ -142,6 +148,10 @@ def search_recent_news(sector=""):
         print(f"Link: {row['Link']}")
         print("-" * 80)
 
+
 if __name__ == "__main__":
     sector_input = input("Enter the sector to monitor ransomware attacks (e.g., healthcare, finance): ").strip()
-    search_recent_news(sector_input)
+    if sector_input:
+        search_recent_news(sector_input)
+    else:
+        print("No sector entered. Exiting.")
