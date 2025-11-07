@@ -18,23 +18,9 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import feedparser
 import dateparser
-import re
-
-# Register dateparser as a date handler for feedparser
-try:
-    def dateparser_tuple(date_string):
-        dt_object = dateparser.parse(date_string)
-        if dt_object:
-            return dt_object.utctimetuple()
-        return None
-    feedparser.registerDateHandler(dateparser_tuple)
-except ImportError:
-    print("dateparser not installed. Install it with 'pip install dateparser' for better date parsing.")
-
 
 WINDOW_DAYS = 90
 COUNTRIES = {"US": "us", "UK": "gb"}
-
 
 def clean_html(raw_html):
     """Remove HTML tags and trim extra whitespace."""
@@ -43,9 +29,8 @@ def clean_html(raw_html):
     soup = BeautifulSoup(raw_html, "html.parser")
     return soup.get_text().strip()
 
-
 def build_query(sector):
-    """Builds a search query combining multiple social engineering-related keywords."""
+    """Build a search query combining multiple social engineering-related keywords."""
     keywords = [
         '"social engineering attack"',
         '"phishing scam"',
@@ -57,10 +42,10 @@ def build_query(sector):
         '"deception campaign"',
     ]
     keyword_query = " OR ".join(keywords)
-    return f"({keyword_query}) {sector}"
+    sector = sector.strip()
+    return f"({keyword_query}) {sector}" if sector else f"({keyword_query})"
 
-
-def search_recent_news(sector):
+def search_recent_news(sector=""):
     """Search Google News for social engineering campaigns by sector in the last 90 days (US + UK)."""
     query = build_query(sector)
     all_articles = []
@@ -95,9 +80,11 @@ def search_recent_news(sector):
                     published_date = datetime(*item.published_parsed[:6])
                 elif hasattr(item, "updated_parsed") and item.updated_parsed:
                     published_date = datetime(*item.updated_parsed[:6])
+                else:
+                    published_date = dateparser.parse(getattr(item, "published", "") or getattr(item, "updated", ""))
 
-                # Filter out old articles
-                if published_date and published_date < cutoff_date:
+                # Skip old articles
+                if not published_date or published_date < cutoff_date:
                     continue
 
                 source = ""
@@ -133,7 +120,8 @@ def search_recent_news(sector):
 
     # Save results
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    csv_filename = f"social_engineering_news_{sector.replace(' ', '_')}_{timestamp}.csv"
+    sector_safe = sector.replace(" ", "_") if sector else "general"
+    csv_filename = f"social_engineering_news_{sector_safe}_{timestamp}.csv"
     df.to_csv(csv_filename, index=False, encoding="utf-8-sig")
 
     print(f"\nSaved {len(df)} unique articles to '{csv_filename}'")
@@ -149,10 +137,6 @@ def search_recent_news(sector):
         print(f"Link: {row['Link']}")
         print("-" * 80)
 
-
 if __name__ == "__main__":
     sector_input = input("Enter the sector to monitor social engineering campaigns (e.g., healthcare, finance, education): ").strip()
-    if sector_input:
-        search_recent_news(sector_input)
-    else:
-        print("No sector entered. Exiting.")
+    search_recent_news(sector_input)
