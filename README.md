@@ -9,8 +9,8 @@ To use these scripts, you'll need to set up your environment and install the nec
 ### 1. Clone the Repository
 
 ```bash
-git clone <repository-url>
-cd <repository-directory>
+git clone https://github.com/osint-automated/OSINT-Python-Scripts.git
+cd OSINT-Python-Scripts
 ```
 
 ### 2. Create a Virtual Environment
