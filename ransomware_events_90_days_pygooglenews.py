@@ -43,7 +43,7 @@ def search_recent_news(sector):
     Duplicate articles (based on Title and Link) are removed.
     """
     countries = {"US": "us", "UK": "gb"}
-    topic = f'intitle:"ransomware attack" {sector}'
+    topic = 'ransomware'
     all_articles = []
 
     for country_name, country_code in countries.items():
