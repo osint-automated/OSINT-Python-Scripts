@@ -86,45 +86,45 @@ Here is a brief overview of each script in this repository:
 -   **`abuseipdb_search.py`**: Checks the reputation of an IP address using the AbuseIPDB API.
 -   **`ahmia_fi_scraper.py`**: Scrapes .onion links from the Ahmia.fi search engine.
 -   **`alienvault_otx_search.py`**: Searches for IP address information on AlienVault OTX.
--   **`APT_campaign_search_90_days_pygooglenews.py`**: Searches for APT campaign news in the last 90 days using Google News.
+-   **`apt_campaign_search_90_days_pygooglenews.py`**: Searches for APT campaign news in the last 90 days using Google News.
 -   **`chatgpt_api.py`**: A simple command-line interface to interact with OpenAI's GPT models.
 -   **`chinese_rss_search.py`**: Searches for keywords in various Chinese news RSS feeds.
 -   **`claude_ai.py`**: Interacts with Anthropic's Claude API for text summarization.
--   **`CTI_Report_IP_Address.py`**: Generates a Cyber Threat Intelligence report for a given IP address, aggregating data from multiple sources.
+-   **`cti_report_ip_address.py`**: Generates a Cyber Threat Intelligence report for a given IP address, aggregating data from multiple sources.
 -   **`currentapi_news.py`**: Fetches news articles from the Currents API.
 -   **`cyber_threat_intelligence_report_generator.py`**: Generates a comprehensive CTI report based on news articles.
 -   **`data_breach_leak_search_30_days_pygooglenews.py`**: Searches for data breach and leak news in the last 30 days using Google News.
 -   **`defang_urls.py`**: Defangs a list of URLs by replacing `.` with `[.]`.
 -   **`disinformation_detection.py`**: Analyzes text for disinformation narratives using OpenAI's GPT models.
--   **`DNS_Records_Lookup.py`**: Performs a DNS lookup for a given domain.
--   **`DNSDumpster.py`**: Interacts with the DNSDumpster API to find DNS information about a domain.
+-   **`dns_records_lookup.py`**: Performs a DNS lookup for a given domain.
+-   **`dnsdumpster.py`**: Interacts with the DNSDumpster API to find DNS information about a domain.
 -   **`email_extractor.py`**: Extracts email addresses from a given URL.
--   **`EXIF_Extractor.py`**: Extracts EXIF metadata from image files.
+-   **`exif_extractor.py`**: Extracts EXIF metadata from image files.
 -   **`favicon_discovery.py`**: Finds websites with a matching favicon hash using Shodan.
 -   **`file_metadata_analysis.py`**: Extracts metadata from various file types.
--   **`general_RSS_Search.py`**: Searches for keywords in a list of general news RSS feeds.
--   **`Get_IP_Address.py`**: Pings a domain to get its IP address.
--   **`Global SITREP Generator.py`**: Generates a global situation report from news articles.
--   **`Google News Scraper.py`**: Scrapes news articles from Google News.
+-   **`general_rss_search.py`**: Searches for keywords in a list of general news RSS feeds.
+-   **`get_ip_address.py`**: Pings a domain to get its IP address.
+-   **`global_sitrep_generator.py`**: Generates a global situation report from news articles.
+-   **`google_news_scraper.py`**: Scrapes news articles from Google News.
 -   **`google_search.py`**: Performs a Google Custom Search.
 -   **`greynoise_ip_lookup.py`**: Looks up an IP address in the GreyNoise database.
--   **`HTTP_response_header_analysis.py`**: Analyzes the HTTP response headers of a website.
+-   **`http_response_header_analysis.py`**: Analyzes the HTTP response headers of a website.
 -   **`image_conversion.py`**: Converts images from one format to another.
 -   **`image_scraper.py`**: Scrapes images from a webpage.
 -   **`influence_ops_search_30_days_pygooglenews.py`**: Searches for influence operations news in the last 30 days using Google News.
 -   **`instagram_profile_scraper.py`**: Scrapes public Instagram profiles using the Apify API.
--   **`IP VPN Check.py`**: Checks if an IP address is a VPN or proxy.
--   **`IP_geolocation.py`**: Geolocates an IP address using the ipinfo.io API.
+-   **`ip_vpn_check.py`**: Checks if an IP address is a VPN or proxy.
+-   **`ip_geolocation.py`**: Geolocates an IP address using the ipinfo.io API.
 -   **`list_ips_proxy_checker.py`**: Checks a list of IP addresses for VPN or proxy usage.
 -   **`malware_events_search_90_days_pygooglenews.py`**: Searches for malware events in the last 90 days using Google News.
 -   **`news_summary_current_claude.py`**: Summarizes news articles from the Currents API using Anthropic's Claude.
 -   **`newsapi_query_to_csv.py`**: Queries the NewsAPI and saves the results to a CSV file.
--   **`NewsDataAPI Search.py`**: Searches for news articles using the NewsData.io API.
+-   **`newsdataapi_search.py`**: Searches for news articles using the NewsData.io API.
 -   **`osint_industries_search.py`**: Searches for information on OSINT Industries.
--   **`Phone Number VOIP Check.py`**: Checks if a phone number is a VoIP number using the Twilio API.
+-   **`phone_number_voip_check.py`**: Checks if a phone number is a VoIP number using the Twilio API.
 -   **`phone_number_extractor.py`**: Extracts phone numbers from a webpage.
 -   **`ransomware_events_90_days_pygooglenews.py`**: Searches for ransomware events in the last 90 days using Google News.
--   **`reverse_IP_lookup.py`**: Performs a reverse IP lookup to find domains hosted on a given IP.
+-   **`reverse_ip_lookup.py`**: Performs a reverse IP lookup to find domains hosted on a given IP.
 -   **`robotstxt_site_enum.py`**: Enumerates a website's `robots.txt` and `sitemap.xml` files.
 -   **`russian_rss_search.py`**: Searches for keywords in various Russian news RSS feeds.
 -   **`sentiment_analysis.py`**: Performs sentiment analysis on a text file.
@@ -138,10 +138,10 @@ Here is a brief overview of each script in this repository:
 -   **`tor66_scraper.py`**: Scrapes .onion links from the Tor66 search engine.
 -   **`tweet_scraper.py`**: Scrapes tweets from a Twitter handle using the Apify API.
 -   **`virustotal_ip_lookup.py`**: Looks up an IP address on VirusTotal.
--   **`VPN_Proxy_Checker.py`**: Checks if an IP address is a VPN or proxy using the ProxyCheck.io API.
+-   **`vpn_proxy_checker.py`**: Checks if an IP address is a VPN or proxy using the ProxyCheck.io API.
 -   **`website_fingerprinting.py`**: Fingerprints a website by analyzing its HTTP headers.
 -   **`whois_lookup.py`**: Performs a WHOIS lookup for a domain or IP address.
--   **`YouTube Video Downloader.py`**: Downloads a YouTube video.
+-   **`youtube_video_downloader.py`**: Downloads a YouTube video.
 -   **`youtube_channel_stats.py`**: Fetches statistics for a YouTube channel.
 -   **`youtube_comments_download.py`**: Downloads comments from a YouTube video.
 -   **`youtube_multi_channel_stats.py`**: Fetches statistics for multiple YouTube channels.
