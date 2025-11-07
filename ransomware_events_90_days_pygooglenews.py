@@ -50,8 +50,13 @@ def search_recent_news(sector):
         print(f"\nSearching for '{topic}' in {country_name} (last 90 days)...")
         gn = GoogleNews(lang='en', country=country_code)
         try:
-            # Use 'when' parameter for a 90-day window to avoid date format issues
-            search_results = gn.search(topic, when='90d')
+            # Calculate date range for the last 90 days
+            today = datetime.now()
+            ninety_days_ago = today - timedelta(days=90)
+            from_date_str = ninety_days_ago.strftime('%Y-%m-%d')
+            to_date_str = today.strftime('%Y-%m-%d')
+
+            search_results = gn.search(topic, from_=from_date_str, to_=to_date_str)
             entries = search_results.get('entries', [])
             if not entries:
                 print(f"No articles found for {country_name}.")
