@@ -1,11 +1,13 @@
 """
-This script searches for news articles about ransomware attacks in the US and UK
-from the last 90 days based on a user-provided sector. It uses the pygooglenews
-library to search Google News and saves the results to a CSV file.
+Ransomware Attack Monitor
+Searches for news articles about ransomware attacks in the US and UK
+from the last 90 days based on a user-provided sector.
+Uses the pygooglenews library to search Google News and saves results to a CSV file.
 """
+
 # --- Compatibility fix for Python 3.10+ and pygooglenews / feedparser ---
 import collections
-if not hasattr(collections, 'Callable'):
+if not hasattr(collections, "Callable"):
     import collections.abc
     collections.Callable = collections.abc.Callable
 # ------------------------------------------------------------------------
@@ -14,8 +16,8 @@ from pygooglenews import GoogleNews
 from datetime import datetime, timedelta
 import pandas as pd
 from bs4 import BeautifulSoup
-import feedparser # Import feedparser
-import dateparser # Import the dateparser library
+import feedparser
+import dateparser
 
 # Register dateparser as a date handler for feedparser
 try:
@@ -28,6 +30,11 @@ try:
 except ImportError:
     print("dateparser not installed. Install it with 'pip install dateparser' for better date parsing.")
 
+
+WINDOW_DAYS = 90
+COUNTRIES = {"US": "us", "UK": "gb"}
+
+
 def clean_html(raw_html):
     """Remove HTML tags and trim extra whitespace."""
     if not raw_html:
@@ -35,39 +42,48 @@ def clean_html(raw_html):
     soup = BeautifulSoup(raw_html, "html.parser")
     return soup.get_text().strip()
 
-def search_recent_news(sector):
-    """
-    Searches Google News for ransomware attacks in the US and UK
-    related to a specific sector in the last 90 days using intitle:"ransomware attack".
-    Each run generates a new CSV file with a timestamp.
-    Duplicate articles (based on Title and Link) are removed.
-    """
-    countries = {"US": "us", "UK": "gb"}
-    topic = 'ransomware'
-    all_articles = []
 
-    for country_name, country_code in countries.items():
-        print(f"\nSearching for '{topic}' in {country_name}...")
-        gn = GoogleNews(lang='en', country=country_code)
+def build_query(sector):
+    """Builds a search query for ransomware-related articles in a given sector."""
+    keywords = [
+        'intitle:"ransomware attack"',
+        '"ransomware incident"',
+        '"ransomware group"',
+        '"ransomware campaign"',
+        '"ransomware outbreak"',
+        '"cyber extortion"',
+    ]
+    keyword_query = " OR ".join(keywords)
+    return f"({keyword_query}) {sector}"
+
+
+def search_recent_news(sector):
+    """Searches Google News for ransomware attacks by sector in the last 90 days (US + UK)."""
+    query = build_query(sector)
+    all_articles = []
+    cutoff_date = datetime.utcnow() - timedelta(days=WINDOW_DAYS)
+
+    for country_name, country_code in COUNTRIES.items():
+        print(f"\nSearching for '{query}' in {country_name}...")
+        gn = GoogleNews(lang="en", country=country_code)
+
         try:
-            # Calculate date range for the last 90 days
-            search_results = gn.search(topic)
-            entries = search_results.get('entries', [])
+            search_results = gn.search(query)
+            entries = search_results.get("entries", [])
+
             if not entries:
-                print(f"No articles found for {country_name}.")
+                print(f"No direct matches in {country_name}, retrying with broader 'ransomware {sector}' query...")
+                fallback_query = f'"ransomware" {sector}'
+                search_results = gn.search(fallback_query)
+                entries = search_results.get("entries", [])
+
+            if not entries:
+                print(f"No articles found in {country_name}.")
                 continue
 
             for item in entries:
-                # Source extraction
-                source = None
-                if hasattr(item, "source") and item.source:
-                    if isinstance(item.source, dict):
-                        source = item.source.get("title", "")
-                    else:
-                        source = str(item.source)
-
-                # Description cleanup
-                description = getattr(item, "summary", "") or getattr(item, "description", "")
+                title = getattr(item, "title", "") or ""
+                description = getattr(item, "summary", "") or getattr(item, "description", "") or ""
                 clean_description = clean_html(description)
 
                 # Robust date parsing
@@ -76,41 +92,46 @@ def search_recent_news(sector):
                     published_date = datetime(*item.published_parsed[:6])
                 elif hasattr(item, "updated_parsed") and item.updated_parsed:
                     published_date = datetime(*item.updated_parsed[:6])
-                else:
-                    published_date = getattr(item, "published", "") or getattr(item, "updated", "")
+
+                # Skip old articles
+                if published_date and published_date < cutoff_date:
+                    continue
+
+                source = ""
+                if hasattr(item, "source") and item.source:
+                    if isinstance(item.source, dict):
+                        source = item.source.get("title", "")
+                    else:
+                        source = str(item.source)
 
                 all_articles.append({
                     "Country": country_name,
                     "Source": source,
                     "Date": published_date,
-                    "Title": getattr(item, "title", ""),
+                    "Title": title,
                     "Description": clean_description,
                     "Link": getattr(item, "link", "")
                 })
 
-            print(f"Fetched {len(entries)} articles from {country_name}.")
+            print(f"Fetched {len(entries)} total; retained {len(all_articles)} after 90-day filtering for {country_name}.")
 
         except Exception as e:
-            print(f"An error occurred while searching {country_name}: {e}")
+            print(f"Error searching {country_name}: {e}")
 
     if not all_articles:
-        print("\nNo articles found for the specified sector in the last 90 days.")
+        print("\nNo recent ransomware articles found for the specified sector.")
         return
 
     # Convert to DataFrame
     df = pd.DataFrame(all_articles)
-
-    # Sort by date safely
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce", utc=True)
     df = df.sort_values("Date", ascending=False)
-
-    # Remove duplicates based on Title and Link
     df = df.drop_duplicates(subset=["Title", "Link"], keep="first")
 
-    # Export to CSV with timestamp
+    # Export results
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     csv_filename = f"ransomware_news_{sector.replace(' ', '_')}_{timestamp}.csv"
-    df.to_csv(csv_filename, index=False, encoding='utf-8-sig')
+    df.to_csv(csv_filename, index=False, encoding="utf-8-sig")
     print(f"\nSaved {len(df)} unique articles to '{csv_filename}'")
 
     # Preview results
@@ -122,7 +143,8 @@ def search_recent_news(sector):
         print(f"Title: {row['Title']}")
         print(f"Description: {row['Description'][:200]}...")
         print(f"Link: {row['Link']}")
-        print("-" * 20)
+        print("-" * 80)
+
 
 if __name__ == "__main__":
     sector_input = input("Enter the sector to monitor ransomware attacks (e.g., healthcare, finance): ").strip()

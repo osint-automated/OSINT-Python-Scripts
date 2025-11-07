@@ -6,7 +6,7 @@ from the last 30 days. Excludes hacktivism-related coverage. Exports to CSV.
 
 # --- Compatibility fix for Python 3.10+ and pygooglenews / feedparser ---
 import collections
-if not hasattr(collections, 'Callable'):
+if not hasattr(collections, "Callable"):
     import collections.abc
     collections.Callable = collections.abc.Callable
 # ------------------------------------------------------------------------
@@ -15,8 +15,8 @@ from pygooglenews import GoogleNews
 from datetime import datetime, timedelta
 import pandas as pd
 from bs4 import BeautifulSoup
-import feedparser # Import feedparser
-import dateparser # Import the dateparser library
+import feedparser
+import dateparser
 import re
 
 # Register dateparser as a date handler for feedparser
@@ -31,9 +31,9 @@ except ImportError:
     print("dateparser not installed. Install it with 'pip install dateparser' for better date parsing.")
 
 
-LANG = "en"  # only English results; remove/change if you want multilingual
+LANG = "en"  # English results only
+WINDOW_DAYS = 30
 
-# Terms to search for (broad influence / IO / disinfo vocabulary)
 INFLUENCE_KEYWORDS = [
     "influence operation",
     "information operation",
@@ -41,77 +41,79 @@ INFLUENCE_KEYWORDS = [
     "propaganda",
     "social media manipulation",
     "foreign influence",
-    "state-sponsored"
+    "state-sponsored",
 ]
 
-# Words that indicate hacktivism — results containing these will be filtered out
 HACKTIVIST_TERMS = [
     "hacktivist", "hacktivism", "anonymous", "website defacement", "website defaced",
-    "do x", "dox", "doxing", "doxxed", "doxed", "defacement"
+    "dox", "doxing", "doxxed", "doxed", "defacement",
 ]
 
-# Platforms to detect in article text
 PLATFORM_KEYWORDS = ["Twitter", "X", "Facebook", "Instagram", "TikTok", "Telegram", "Reddit", "YouTube"]
 
+
 def clean_html(raw_html):
-    """Remove HTML tags and trim extra whitespace."""
     if not raw_html:
         return ""
     soup = BeautifulSoup(raw_html, "html.parser")
     return soup.get_text().strip()
 
+
 def build_influence_query():
-    """Combine keywords into an OR query string for Google News."""
-    # wrap each phrase in quotes (already quoted above) and join with OR
-    return " OR ".join(INFLUENCE_KEYWORDS)
+    return " OR ".join([f'"{kw}"' if not kw.startswith('"') else kw for kw in INFLUENCE_KEYWORDS])
+
 
 def detect_platforms(text):
-    """Return comma-separated platform names found in text (case-insensitive)."""
-    found = []
     if not text:
         return ""
-    for p in PLATFORM_KEYWORDS:
-        # match whole word-ish, case-insensitive
-        if re.search(r"\b" + re.escape(p) + r"\b", text, flags=re.IGNORECASE):
-            found.append(p)
+    found = [p for p in PLATFORM_KEYWORDS if re.search(r"\b" + re.escape(p) + r"\b", text, re.IGNORECASE)]
     return ", ".join(found)
 
+
 def contains_hacktivist_terms(text):
-    """Return True if text contains hacktivist indicators (case-insensitive)."""
     if not text:
         return False
     for term in HACKTIVIST_TERMS:
-        if re.search(re.escape(term), text, flags=re.IGNORECASE):
+        if re.search(re.escape(term), text, re.IGNORECASE):
             return True
     return False
 
+
 def is_state_sponsored(text):
-    """Lightweight detection if an article mentions state-sponsored language."""
     if not text:
         return False
-    return bool(re.search(r"\b(state[- ]?sponsored|nation[- ]?state|state[- ]?linked|state actor|government[- ]?linked)\b", text, flags=re.IGNORECASE))
+    return bool(
+        re.search(
+            r"\b(state[- ]?sponsored|nation[- ]?state|state[- ]?linked|state actor|government[- ]?linked)\b",
+            text,
+            re.IGNORECASE,
+        )
+    )
+
 
 def search_recent_influence_ops():
-    """Main function: global search for influence operations in the last WINDOW_DAYS."""
+    """Global search for influence operations in the last 30 days."""
     query = build_influence_query()
     all_articles = []
 
-    print(f"\nSearching globally for influence operations...")
+    print(f"\nSearching globally for influence operation news...")
     gn = GoogleNews(lang=LANG)
 
     try:
+        # Remove from_/to_ arguments to avoid date parsing issues
         search_results = gn.search(query)
         entries = search_results.get("entries", [])
 
-        # fallback if OR list returns nothing
         if not entries:
-            print("No direct matches found, retrying with broader 'disinformation' query...")
+            print("No direct matches found, retrying with fallback 'disinformation' query...")
             search_results = gn.search('"disinformation"')
             entries = search_results.get("entries", [])
 
         if not entries:
-            print("No influence-operation articles found globally in the time window.")
+            print("No influence-operation articles found globally.")
             return
+
+        cutoff_date = datetime.utcnow() - timedelta(days=WINDOW_DAYS)
 
         for item in entries:
             title = getattr(item, "title", "") or ""
@@ -119,25 +121,32 @@ def search_recent_influence_ops():
             combined_text = " ".join([title, description])
             clean_description = clean_html(description)
 
-            # filter out hacktivism-related results
+            # Skip hacktivist-related articles
             if contains_hacktivist_terms(combined_text):
-                # skip entries that look like hacktivist coverage
                 continue
 
-            # Robust date parsing
             published_date = None
             if hasattr(item, "published_parsed") and item.published_parsed:
                 published_date = datetime(*item.published_parsed[:6])
             elif hasattr(item, "updated_parsed") and item.updated_parsed:
                 published_date = datetime(*item.updated_parsed[:6])
-            else:
-                published_date = getattr(item, "published", "") or getattr(item, "updated", "")
+
+            # Skip articles older than 30 days
+            if published_date and published_date < cutoff_date:
+                continue
 
             platforms = detect_platforms(combined_text)
             state_flag = is_state_sponsored(combined_text)
 
+            source = ""
+            if hasattr(item, "source") and item.source:
+                if isinstance(item.source, dict):
+                    source = item.source.get("title", "")
+                else:
+                    source = str(item.source)
+
             all_articles.append({
-                "Source": (item.source.get("title") if isinstance(getattr(item, "source", None), dict) else str(getattr(item, "source", "") or "")),
+                "Source": source,
                 "Date": published_date,
                 "Title": title,
                 "Description": clean_description,
@@ -146,17 +155,17 @@ def search_recent_influence_ops():
                 "Link": getattr(item, "link", "")
             })
 
-        print(f"Fetched {len(all_articles)} candidate articles (after excluding hacktivism).")
+        print(f"Fetched {len(all_articles)} recent articles (after filtering hacktivism, within {WINDOW_DAYS} days).")
 
     except Exception as e:
         print(f"An error occurred during global search: {e}")
         return
 
     if not all_articles:
-        print("\nNo articles passed filtering for influence operations.")
+        print("\nNo recent influence-operation articles found after filtering.")
         return
 
-    # Convert to DataFrame and clean up
+    # DataFrame cleanup
     df = pd.DataFrame(all_articles)
     df["Date"] = pd.to_datetime(df["Date"], errors="coerce", utc=True)
     df = df.sort_values("Date", ascending=False)
@@ -168,7 +177,7 @@ def search_recent_influence_ops():
     df.to_csv(csv_filename, index=False, encoding="utf-8-sig")
     print(f"\nSaved {len(df)} unique articles to '{csv_filename}'")
 
-    # Print a short preview
+    # Preview output
     print("\n--- Results Preview ---")
     for _, row in df.iterrows():
         print(f"Date: {row['Date']}")
@@ -181,6 +190,7 @@ def search_recent_influence_ops():
         print(f"Description: {row['Description'][:300]}...")
         print(f"Link: {row['Link']}")
         print("-" * 80)
+
 
 if __name__ == "__main__":
     search_recent_influence_ops()

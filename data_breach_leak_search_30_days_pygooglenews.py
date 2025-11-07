@@ -15,8 +15,8 @@ from pygooglenews import GoogleNews
 from datetime import datetime, timedelta
 import pandas as pd
 from bs4 import BeautifulSoup
-import feedparser # Import feedparser
-import dateparser # Import the dateparser library
+import feedparser
+import dateparser
 import re
 
 # Register dateparser as a date handler for feedparser
@@ -30,6 +30,7 @@ try:
 except ImportError:
     print("dateparser not installed. Install it with 'pip install dateparser' for better date parsing.")
 
+
 def clean_html(raw_html):
     """Remove HTML tags and trim extra whitespace."""
     if not raw_html:
@@ -37,18 +38,18 @@ def clean_html(raw_html):
     soup = BeautifulSoup(raw_html, "html.parser")
     return soup.get_text().strip()
 
+
 def extract_cves(text):
     """Extract CVE identifiers if present."""
     return ", ".join(re.findall(r"CVE-\d{4}-\d{4,7}", text, re.IGNORECASE))
 
+
 def build_breach_query():
-    """
-    Builds a broad global query for data breaches and leaks.
-    """
+    """Build a broad global query for data breaches and leaks."""
     keywords = [
         '"data breach"',
         '"database leak"',
-        "'data leak'",
+        '"data leak"',
         '"information leak"',
         '"data exposure"',
         '"cyber leak"',
@@ -64,18 +65,20 @@ def build_breach_query():
     query = " OR ".join(keywords)
     return query
 
+
 def search_recent_news():
-    """
-    Searches Google News globally for data breaches and leaks in the last 30 days.
-    """
+    """Search Google News globally for data breaches and leaks in the last 30 days."""
     query = build_breach_query()
     all_articles = []
 
     print(f"\nSearching globally for '{query}'...")
     gn = GoogleNews(lang='en')
     try:
+        # Perform search without from_/to_ (prevents date parsing errors)
         search_results = gn.search(query)
         entries = search_results.get('entries', [])
+
+        # Retry with fallback query if empty
         if not entries:
             print("No direct matches found, retrying with fallback 'data breach' query...")
             fallback_query = '"data breach"'
@@ -85,6 +88,8 @@ def search_recent_news():
         if not entries:
             print("No articles found globally.")
             return
+
+        thirty_days_ago = datetime.utcnow() - timedelta(days=30)
 
         for item in entries:
             source = None
@@ -102,8 +107,10 @@ def search_recent_news():
                 published_date = datetime(*item.published_parsed[:6])
             elif hasattr(item, "updated_parsed") and item.updated_parsed:
                 published_date = datetime(*item.updated_parsed[:6])
-            else:
-                published_date = getattr(item, "published", "") or getattr(item, "updated", "")
+
+            # Skip entries older than 30 days
+            if published_date and published_date < thirty_days_ago:
+                continue
 
             cves = extract_cves(clean_description)
 
@@ -116,14 +123,14 @@ def search_recent_news():
                 "Link": getattr(item, "link", "")
             })
 
-        print(f"Fetched {len(entries)} articles globally.")
+        print(f"Fetched {len(all_articles)} recent articles globally (last 30 days).")
 
     except Exception as e:
         print(f"An error occurred during global search: {e}")
         return
 
     if not all_articles:
-        print("\nNo articles found.")
+        print("\nNo recent articles found.")
         return
 
     # Convert to DataFrame
@@ -149,6 +156,7 @@ def search_recent_news():
         print(f"Description: {row['Description'][:200]}...")
         print(f"Link: {row['Link']}")
         print("-" * 20)
+
 
 if __name__ == "__main__":
     search_recent_news()

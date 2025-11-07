@@ -1,12 +1,13 @@
 """
-This script searches for news articles about social engineering campaigns and related cyber threats
+Social Engineering Campaign Monitor
+Searches for news articles about social engineering campaigns and related cyber threats
 in the US and UK from the last 90 days, filtered by a user-provided sector.
-It uses the pygooglenews library to query Google News and saves results to a CSV file.
+Uses the pygooglenews library and saves results to a CSV file.
 """
 
 # --- Compatibility fix for Python 3.10+ and pygooglenews / feedparser ---
 import collections
-if not hasattr(collections, 'Callable'):
+if not hasattr(collections, "Callable"):
     import collections.abc
     collections.Callable = collections.abc.Callable
 # ------------------------------------------------------------------------
@@ -15,8 +16,9 @@ from pygooglenews import GoogleNews
 from datetime import datetime, timedelta
 import pandas as pd
 from bs4 import BeautifulSoup
-import feedparser # Import feedparser
-import dateparser # Import the dateparser library
+import feedparser
+import dateparser
+import re
 
 # Register dateparser as a date handler for feedparser
 try:
@@ -29,6 +31,11 @@ try:
 except ImportError:
     print("dateparser not installed. Install it with 'pip install dateparser' for better date parsing.")
 
+
+WINDOW_DAYS = 90
+COUNTRIES = {"US": "us", "UK": "gb"}
+
+
 def clean_html(raw_html):
     """Remove HTML tags and trim extra whitespace."""
     if not raw_html:
@@ -36,10 +43,9 @@ def clean_html(raw_html):
     soup = BeautifulSoup(raw_html, "html.parser")
     return soup.get_text().strip()
 
+
 def build_query(sector):
-    """
-    Builds a robust search query combining multiple social engineering-related keywords.
-    """
+    """Builds a search query combining multiple social engineering-related keywords."""
     keywords = [
         '"social engineering attack"',
         '"phishing scam"',
@@ -48,75 +54,75 @@ def build_query(sector):
         '"BEC attack"',
         '"email fraud"',
         '"cyber fraud"',
-        '"deception campaign"'
+        '"deception campaign"',
     ]
-    # Join keywords with OR to capture broader coverage
     keyword_query = " OR ".join(keywords)
     return f"({keyword_query}) {sector}"
 
+
 def search_recent_news(sector):
-    """
-    Searches Google News for social engineering and related campaigns
-    in the US and UK for a given sector within the last 90 days.
-    """
-    countries = {"US": "us", "UK": "gb"}
+    """Search Google News for social engineering campaigns by sector in the last 90 days (US + UK)."""
     query = build_query(sector)
     all_articles = []
+    cutoff_date = datetime.utcnow() - timedelta(days=WINDOW_DAYS)
 
-
-
-    for country_name, country_code in countries.items():
+    for country_name, country_code in COUNTRIES.items():
         print(f"\nSearching for '{query}' in {country_name}...")
-        gn = GoogleNews(lang='en', country=country_code)
+        gn = GoogleNews(lang="en", country=country_code)
+
         try:
-            # Use 'when' parameter for a 90-day window to avoid date format issues
             search_results = gn.search(query)
-            entries = search_results.get('entries', [])
+            entries = search_results.get("entries", [])
+
             if not entries:
-                print(f"No direct matches for {country_name}, retrying with broader term 'social engineering {sector}'...")
+                print(f"No direct matches in {country_name}, retrying with broader query...")
                 fallback_query = f'"social engineering" {sector}'
                 search_results = gn.search(fallback_query)
-                entries = search_results.get('entries', [])
+                entries = search_results.get("entries", [])
 
             if not entries:
-                print(f"No articles found for {country_name}.")
+                print(f"No articles found in {country_name}.")
                 continue
 
             for item in entries:
-                source = None
+                title = getattr(item, "title", "") or ""
+                description = getattr(item, "summary", "") or getattr(item, "description", "") or ""
+                clean_description = clean_html(description)
+
+                # Robust date handling
+                published_date = None
+                if hasattr(item, "published_parsed") and item.published_parsed:
+                    published_date = datetime(*item.published_parsed[:6])
+                elif hasattr(item, "updated_parsed") and item.updated_parsed:
+                    published_date = datetime(*item.updated_parsed[:6])
+
+                # Filter out old articles
+                if published_date and published_date < cutoff_date:
+                    continue
+
+                source = ""
                 if hasattr(item, "source") and item.source:
                     if isinstance(item.source, dict):
                         source = item.source.get("title", "")
                     else:
                         source = str(item.source)
 
-                description = getattr(item, "summary", "") or getattr(item, "description", "")
-                clean_description = clean_html(description)
-
-                published_date = None
-                if hasattr(item, "published_parsed") and item.published_parsed:
-                    published_date = datetime(*item.published_parsed[:6])
-                elif hasattr(item, "updated_parsed") and item.updated_parsed:
-                    published_date = datetime(*item.updated_parsed[:6])
-                else:
-                    published_date = getattr(item, "published", "") or getattr(item, "updated", "")
-
                 all_articles.append({
                     "Country": country_name,
                     "Source": source,
                     "Date": published_date,
-                    "Title": getattr(item, "title", ""),
+                    "Title": title,
                     "Description": clean_description,
                     "Link": getattr(item, "link", "")
                 })
 
-            print(f"Fetched {len(entries)} articles from {country_name}.")
+            print(f"Fetched {len(entries)} total, retained {len(all_articles)} after 90-day filtering for {country_name}.")
 
         except Exception as e:
-            print(f"An error occurred while searching {country_name}: {e}")
+            print(f"Error searching {country_name}: {e}")
 
     if not all_articles:
-        print("\nNo articles found for the specified sector.")
+        print("\nNo recent articles found for the specified sector.")
         return
 
     # Convert to DataFrame
@@ -125,13 +131,14 @@ def search_recent_news(sector):
     df = df.sort_values("Date", ascending=False)
     df = df.drop_duplicates(subset=["Title", "Link"], keep="first")
 
-    # Export to CSV
+    # Save results
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
     csv_filename = f"social_engineering_news_{sector.replace(' ', '_')}_{timestamp}.csv"
-    df.to_csv(csv_filename, index=False, encoding='utf-8-sig')
+    df.to_csv(csv_filename, index=False, encoding="utf-8-sig")
+
     print(f"\nSaved {len(df)} unique articles to '{csv_filename}'")
 
-    # Preview results
+    # Preview
     print("\n--- Results Preview ---")
     for _, row in df.iterrows():
         print(f"Country: {row['Country']}")
@@ -140,7 +147,8 @@ def search_recent_news(sector):
         print(f"Title: {row['Title']}")
         print(f"Description: {row['Description'][:200]}...")
         print(f"Link: {row['Link']}")
-        print("-" * 20)
+        print("-" * 80)
+
 
 if __name__ == "__main__":
     sector_input = input("Enter the sector to monitor social engineering campaigns (e.g., healthcare, finance, education): ").strip()
