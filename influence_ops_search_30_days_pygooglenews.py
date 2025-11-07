@@ -20,16 +20,13 @@ import dateparser
 import re
 
 # Register dateparser as a date handler for feedparser
-try:
-    def dateparser_tuple(date_string):
-        dt_object = dateparser.parse(date_string)
-        if dt_object:
-            return dt_object.utctimetuple()
-        return None
-    feedparser.registerDateHandler(dateparser_tuple)
-except ImportError:
-    print("dateparser not installed. Install it with 'pip install dateparser' for better date parsing.")
+def dateparser_tuple(date_string):
+    dt_object = dateparser.parse(date_string)
+    if dt_object:
+        return dt_object.utctimetuple()
+    return None
 
+feedparser.registerDateHandler(dateparser_tuple)
 
 LANG = "en"  # English results only
 WINDOW_DAYS = 30
@@ -60,7 +57,7 @@ def clean_html(raw_html):
 
 
 def build_influence_query():
-    return " OR ".join([f'"{kw}"' if not kw.startswith('"') else kw for kw in INFLUENCE_KEYWORDS])
+    return " OR ".join([f'"{kw}"' for kw in INFLUENCE_KEYWORDS])
 
 
 def detect_platforms(text):
@@ -100,7 +97,6 @@ def search_recent_influence_ops():
     gn = GoogleNews(lang=LANG)
 
     try:
-        # Remove from_/to_ arguments to avoid date parsing issues
         search_results = gn.search(query)
         entries = search_results.get("entries", [])
 
@@ -118,7 +114,7 @@ def search_recent_influence_ops():
         for item in entries:
             title = getattr(item, "title", "") or ""
             description = getattr(item, "summary", "") or getattr(item, "description", "") or ""
-            combined_text = " ".join([title, description])
+            combined_text = f"{title} {description}"
             clean_description = clean_html(description)
 
             # Skip hacktivist-related articles
@@ -130,9 +126,11 @@ def search_recent_influence_ops():
                 published_date = datetime(*item.published_parsed[:6])
             elif hasattr(item, "updated_parsed") and item.updated_parsed:
                 published_date = datetime(*item.updated_parsed[:6])
+            else:
+                published_date = dateparser.parse(getattr(item, "published", "") or getattr(item, "updated", ""))
 
             # Skip articles older than 30 days
-            if published_date and published_date < cutoff_date:
+            if not published_date or published_date < cutoff_date:
                 continue
 
             platforms = detect_platforms(combined_text)
