@@ -86,12 +86,14 @@ Here is a brief overview of each script in this repository:
 -   **`abuseipdb_search.py`**: Checks the reputation of an IP address using the AbuseIPDB API.
 -   **`ahmia_fi_scraper.py`**: Scrapes .onion links from the Ahmia.fi search engine.
 -   **`alienvault_otx_search.py`**: Searches for IP address information on AlienVault OTX.
+-   **`APT_campaign_search_90_days_pygooglenews.py`**: Searches for APT campaign news in the last 90 days using Google News.
 -   **`chatgpt_api.py`**: A simple command-line interface to interact with OpenAI's GPT models.
 -   **`chinese_rss_search.py`**: Searches for keywords in various Chinese news RSS feeds.
 -   **`claude_ai.py`**: Interacts with Anthropic's Claude API for text summarization.
 -   **`CTI_Report_IP_Address.py`**: Generates a Cyber Threat Intelligence report for a given IP address, aggregating data from multiple sources.
 -   **`currentapi_news.py`**: Fetches news articles from the Currents API.
 -   **`cyber_threat_intelligence_report_generator.py`**: Generates a comprehensive CTI report based on news articles.
+-   **`data_breach_leak_search_30_days_pygooglenews.py`**: Searches for data breach and leak news in the last 30 days using Google News.
 -   **`defang_urls.py`**: Defangs a list of URLs by replacing `.` with `[.]`.
 -   **`disinformation_detection.py`**: Analyzes text for disinformation narratives using OpenAI's GPT models.
 -   **`DNS_Records_Lookup.py`**: Performs a DNS lookup for a given domain.
@@ -109,10 +111,12 @@ Here is a brief overview of each script in this repository:
 -   **`HTTP_response_header_analysis.py`**: Analyzes the HTTP response headers of a website.
 -   **`image_conversion.py`**: Converts images from one format to another.
 -   **`image_scraper.py`**: Scrapes images from a webpage.
+-   **`influence_ops_search_30_days_pygooglenews.py`**: Searches for influence operations news in the last 30 days using Google News.
 -   **`instagram_profile_scraper.py`**: Scrapes public Instagram profiles using the Apify API.
 -   **`IP VPN Check.py`**: Checks if an IP address is a VPN or proxy.
 -   **`IP_geolocation.py`**: Geolocates an IP address using the ipinfo.io API.
 -   **`list_ips_proxy_checker.py`**: Checks a list of IP addresses for VPN or proxy usage.
+-   **`malware_events_search_90_days_pygooglenews.py`**: Searches for malware events in the last 90 days using Google News.
 -   **`news_summary_current_claude.py`**: Summarizes news articles from the Currents API using Anthropic's Claude.
 -   **`newsapi_query_to_csv.py`**: Queries the NewsAPI and saves the results to a CSV file.
 -   **`NewsDataAPI Search.py`**: Searches for news articles using the NewsData.io API.
@@ -126,6 +130,7 @@ Here is a brief overview of each script in this repository:
 -   **`sentiment_analysis.py`**: Performs sentiment analysis on a text file.
 -   **`shodan_ip_search.py`**: Searches for an IP address on Shodan.
 -   **`simple_link_scraper.py`**: Scrapes all the links from a webpage.
+-   **`social_engineering_campign_search_90_days_pygooglenews.py`**: Searches for social engineering campaign news in the last 90 days using Google News.
 -   **`status_check_up_or_down.py`**: Checks the status of a list of websites.
 -   **`text_scraper.py`**: Scrapes the main text content from a webpage.
 -   **`tiktok_scraper.py`**: Scrapes comments from TikTok videos using the Apify API.
