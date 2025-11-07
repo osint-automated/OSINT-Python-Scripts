@@ -20,15 +20,13 @@ import dateparser
 import re
 
 # Register dateparser as a date handler for feedparser
-try:
-    def dateparser_tuple(date_string):
-        dt_object = dateparser.parse(date_string)
-        if dt_object:
-            return dt_object.utctimetuple()
-        return None
-    feedparser.registerDateHandler(dateparser_tuple)
-except ImportError:
-    print("dateparser not installed. Install it with 'pip install dateparser' for better date parsing.")
+def dateparser_tuple(date_string):
+    dt_object = dateparser.parse(date_string)
+    if dt_object:
+        return dt_object.utctimetuple()
+    return None
+
+feedparser.registerDateHandler(dateparser_tuple)
 
 
 def clean_html(raw_html):
@@ -47,23 +45,24 @@ def extract_cves(text):
 def build_breach_query():
     """Build a broad global query for data breaches and leaks."""
     keywords = [
-        '"data breach"',
-        '"database leak"',
-        '"data leak"',
-        '"information leak"',
-        '"data exposure"',
-        '"cyber leak"',
-        '"customer data stolen"',
-        '"credential leak"',
-        '"data compromise"',
-        '"breach of data"',
-        '"data theft"',
-        '"records exposed"',
-        '"leaked database"',
-        '"data dump"'
+        "data breach",
+        "database leak",
+        "data leak",
+        "information leak",
+        "data exposure",
+        "cyber leak",
+        "customer data stolen",
+        "credential leak",
+        "data compromise",
+        "breach of data",
+        "data theft",
+        "records exposed",
+        "leaked database",
+        "data dump"
     ]
-    query = " OR ".join(keywords)
-    return query
+    # Keep quotes around each phrase for exact match
+    keyword_query = " OR ".join(f'"{kw}"' for kw in keywords)
+    return keyword_query
 
 
 def search_recent_news():
@@ -73,12 +72,11 @@ def search_recent_news():
 
     print(f"\nSearching globally for '{query}'...")
     gn = GoogleNews(lang='en')
+
     try:
-        # Perform search without from_/to_ (prevents date parsing errors)
         search_results = gn.search(query)
         entries = search_results.get('entries', [])
 
-        # Retry with fallback query if empty
         if not entries:
             print("No direct matches found, retrying with fallback 'data breach' query...")
             fallback_query = '"data breach"'
@@ -107,9 +105,11 @@ def search_recent_news():
                 published_date = datetime(*item.published_parsed[:6])
             elif hasattr(item, "updated_parsed") and item.updated_parsed:
                 published_date = datetime(*item.updated_parsed[:6])
+            else:
+                published_date = dateparser.parse(getattr(item, "published", "") or getattr(item, "updated", ""))
 
-            # Skip entries older than 30 days
-            if published_date and published_date < thirty_days_ago:
+            # Skip entries without a valid date or older than 30 days
+            if not published_date or published_date < thirty_days_ago:
                 continue
 
             cves = extract_cves(clean_description)
