@@ -1,10 +1,10 @@
 """
-This script searches globally for news articles about data breaches and leaks
-from the last 30 days. It uses the pygooglenews library to query Google News
-and saves the results to a CSV file.
+Global Data Breach & Leak News Monitor
+Searches Google News for data breaches and leaks globally
+from the last 30 days and saves results to a CSV file.
 """
 
-# --- Compatibility fix for Python 3.10+ and pygooglenews / feedparser ---
+# --- Compatibility fix for Python 3.10+ ---
 import collections
 if not hasattr(collections, 'Callable'):
     import collections.abc
@@ -15,18 +15,8 @@ from pygooglenews import GoogleNews
 from datetime import datetime, timedelta
 import pandas as pd
 from bs4 import BeautifulSoup
-import feedparser
 import dateparser
 import re
-
-# Register dateparser as a date handler for feedparser
-def dateparser_tuple(date_string):
-    dt_object = dateparser.parse(date_string)
-    if dt_object:
-        return dt_object.utctimetuple()
-    return None
-
-feedparser.registerDateHandler(dateparser_tuple)
 
 
 def clean_html(raw_html):
@@ -61,8 +51,19 @@ def build_breach_query():
         "data dump"
     ]
     # Keep quotes around each phrase for exact match
-    keyword_query = " OR ".join(f'"{kw}"' for kw in keywords)
-    return keyword_query
+    return " OR ".join(f'"{kw}"' for kw in keywords)
+
+
+def parse_date(item):
+    """Safely parse dates from feed items without feedparser.registerDateHandler."""
+    try:
+        if hasattr(item, "published_parsed") and item.published_parsed:
+            return datetime(*item.published_parsed[:6])
+        if hasattr(item, "updated_parsed") and item.updated_parsed:
+            return datetime(*item.updated_parsed[:6])
+        return dateparser.parse(getattr(item, "published", "") or getattr(item, "updated", ""))
+    except Exception:
+        return None
 
 
 def search_recent_news():
@@ -79,8 +80,7 @@ def search_recent_news():
 
         if not entries:
             print("No direct matches found, retrying with fallback 'data breach' query...")
-            fallback_query = '"data breach"'
-            search_results = gn.search(fallback_query)
+            search_results = gn.search('"data breach"')
             entries = search_results.get('entries', [])
 
         if not entries:
@@ -90,7 +90,7 @@ def search_recent_news():
         thirty_days_ago = datetime.utcnow() - timedelta(days=30)
 
         for item in entries:
-            source = None
+            source = ""
             if hasattr(item, "source") and item.source:
                 if isinstance(item.source, dict):
                     source = item.source.get("title", "")
@@ -100,15 +100,7 @@ def search_recent_news():
             description = getattr(item, "summary", "") or getattr(item, "description", "")
             clean_description = clean_html(description)
 
-            published_date = None
-            if hasattr(item, "published_parsed") and item.published_parsed:
-                published_date = datetime(*item.published_parsed[:6])
-            elif hasattr(item, "updated_parsed") and item.updated_parsed:
-                published_date = datetime(*item.updated_parsed[:6])
-            else:
-                published_date = dateparser.parse(getattr(item, "published", "") or getattr(item, "updated", ""))
-
-            # Skip entries without a valid date or older than 30 days
+            published_date = parse_date(item)
             if not published_date or published_date < thirty_days_ago:
                 continue
 
@@ -123,14 +115,14 @@ def search_recent_news():
                 "Link": getattr(item, "link", "")
             })
 
-        print(f"Fetched {len(all_articles)} recent articles globally (last 30 days).")
+        if not all_articles:
+            print("No recent articles found in the last 30 days.")
+            return
+
+        print(f"Fetched {len(all_articles)} recent articles globally.")
 
     except Exception as e:
         print(f"An error occurred during global search: {e}")
-        return
-
-    if not all_articles:
-        print("\nNo recent articles found.")
         return
 
     # Convert to DataFrame
@@ -147,7 +139,7 @@ def search_recent_news():
 
     # Preview results
     print("\n--- Results Preview ---")
-    for _, row in df.iterrows():
+    for _, row in df.head(10).iterrows():
         print(f"Date: {row['Date']}")
         print(f"Source: {row['Source']}")
         print(f"Title: {row['Title']}")
