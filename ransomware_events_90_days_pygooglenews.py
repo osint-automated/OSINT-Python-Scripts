@@ -51,10 +51,11 @@ def search_recent_news(sector):
         gn = GoogleNews(lang='en', country=country_code)
         try:
             # Calculate date range for the last 90 days
-            today = datetime.now()
-            ninety_days_ago = today - timedelta(days=90)
-            from_date_str = ninety_days_ago.strftime('%Y-%m-%d')
-            to_date_str = today.strftime('%Y-%m-%d')
+            # Calculate date range for the last 90 days, normalizing to UTC midnight
+            today_utc = datetime.utcnow().replace(hour=0, minute=0, second=0, microsecond=0)
+            ninety_days_ago_utc = today_utc - timedelta(days=90)
+            from_date_str = ninety_days_ago_utc.strftime('%Y-%m-%d')
+            to_date_str = today_utc.strftime('%Y-%m-%d')
 
             search_results = gn.search(topic, from_=from_date_str, to_=to_date_str)
             entries = search_results.get('entries', [])
