@@ -125,11 +125,7 @@ def search_recent_influence_ops():
             elif hasattr(item, "updated_parsed") and item.updated_parsed:
                 published_date = datetime(*item.updated_parsed[:6])
             else:
-                date_str = getattr(item, "published", "") or getattr(item, "updated", "")
-                try:
-                    published_date = dateparser.parse(date_str)
-                except Exception:
-                    published_date = None
+                published_date = getattr(item, "published", "") or getattr(item, "updated", "")
 
             platforms = detect_platforms(combined_text)
             state_flag = is_state_sponsored(combined_text)
