@@ -15,8 +15,20 @@ from pygooglenews import GoogleNews
 from datetime import datetime, timedelta
 import pandas as pd
 from bs4 import BeautifulSoup
-from dateutil import parser as dateparser
+import feedparser # Import feedparser
+import dateparser # Import the dateparser library
 import re
+
+# Register dateparser as a date handler for feedparser
+try:
+    def dateparser_tuple(date_string):
+        dt_object = dateparser.parse(date_string)
+        if dt_object:
+            return dt_object.utctimetuple()
+        return None
+    feedparser.registerDateHandler(dateparser_tuple)
+except ImportError:
+    print("dateparser not installed. Install it with 'pip install dateparser' for better date parsing.")
 
 # --- Config ---
 WINDOW_DAYS = 30
@@ -85,22 +97,19 @@ def search_recent_influence_ops():
     query = build_influence_query()
     all_articles = []
 
-    to_date = datetime.now()
-    from_date = to_date - timedelta(days=WINDOW_DAYS)
-    from_str = from_date.strftime("%Y-%m-%d")
-    to_str = to_date.strftime("%Y-%m-%d")
-
     print(f"\nSearching globally for influence operations (last {WINDOW_DAYS} days)...")
     gn = GoogleNews(lang=LANG)
 
     try:
-        search_results = gn.search(query, from_=from_str, to_=to_str)
+        # Use 'when' parameter for a 30-day window to avoid date format issues
+        search_results = gn.search(query, when='30d')
         entries = search_results.get("entries", [])
 
         # fallback if OR list returns nothing
         if not entries:
             print("No direct matches found, retrying with broader 'disinformation' query...")
-            search_results = gn.search('"disinformation"', from_=from_str, to_=to_str)
+            # Use 'when' parameter for fallback search as well
+            search_results = gn.search('"disinformation"', when='30d')
             entries = search_results.get("entries", [])
 
         if not entries:

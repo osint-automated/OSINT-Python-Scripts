@@ -14,7 +14,19 @@ from pygooglenews import GoogleNews
 from datetime import datetime, timedelta
 import pandas as pd
 from bs4 import BeautifulSoup
-from dateutil import parser as dateparser
+import feedparser # Import feedparser
+import dateparser # Import the dateparser library
+
+# Register dateparser as a date handler for feedparser
+try:
+    def dateparser_tuple(date_string):
+        dt_object = dateparser.parse(date_string)
+        if dt_object:
+            return dt_object.utctimetuple()
+        return None
+    feedparser.registerDateHandler(dateparser_tuple)
+except ImportError:
+    print("dateparser not installed. Install it with 'pip install dateparser' for better date parsing.")
 
 def clean_html(raw_html):
     """Remove HTML tags and trim extra whitespace."""
@@ -34,16 +46,12 @@ def search_recent_news(sector):
     topic = f'intitle:"ransomware attack" {sector}'
     all_articles = []
 
-    to_date = datetime.now()
-    from_date = to_date - timedelta(days=90)
-    from_str = from_date.strftime("%Y-%m-%d")
-    to_str = to_date.strftime("%Y-%m-%d")
-
     for country_name, country_code in countries.items():
         print(f"\nSearching for '{topic}' in {country_name} (last 90 days)...")
         gn = GoogleNews(lang='en', country=country_code)
         try:
-            search_results = gn.search(topic, from_=from_str, to_=to_str)
+            # Use 'when' parameter for a 90-day window to avoid date format issues
+            search_results = gn.search(topic, when='90d')
             entries = search_results.get('entries', [])
             if not entries:
                 print(f"No articles found for {country_name}.")
