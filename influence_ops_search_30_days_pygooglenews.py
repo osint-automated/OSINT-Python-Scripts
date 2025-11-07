@@ -15,18 +15,8 @@ from pygooglenews import GoogleNews
 from datetime import datetime, timedelta
 import pandas as pd
 from bs4 import BeautifulSoup
-import feedparser
 import dateparser
 import re
-
-# Register dateparser as a date handler for feedparser
-def dateparser_tuple(date_string):
-    dt_object = dateparser.parse(date_string)
-    if dt_object:
-        return dt_object.utctimetuple()
-    return None
-
-feedparser.registerDateHandler(dateparser_tuple)
 
 LANG = "en"  # English results only
 WINDOW_DAYS = 30
@@ -88,6 +78,18 @@ def is_state_sponsored(text):
     )
 
 
+def parse_date(item):
+    """Safe date parsing for Python 3.10+."""
+    try:
+        if hasattr(item, "published_parsed") and item.published_parsed:
+            return datetime(*item.published_parsed[:6])
+        if hasattr(item, "updated_parsed") and item.updated_parsed:
+            return datetime(*item.updated_parsed[:6])
+        return dateparser.parse(getattr(item, "published", "") or getattr(item, "updated", ""))
+    except Exception:
+        return None
+
+
 def search_recent_influence_ops():
     """Global search for influence operations in the last 30 days."""
     query = build_influence_query()
@@ -121,13 +123,7 @@ def search_recent_influence_ops():
             if contains_hacktivist_terms(combined_text):
                 continue
 
-            published_date = None
-            if hasattr(item, "published_parsed") and item.published_parsed:
-                published_date = datetime(*item.published_parsed[:6])
-            elif hasattr(item, "updated_parsed") and item.updated_parsed:
-                published_date = datetime(*item.updated_parsed[:6])
-            else:
-                published_date = dateparser.parse(getattr(item, "published", "") or getattr(item, "updated", ""))
+            published_date = parse_date(item)
 
             # Skip articles older than 30 days
             if not published_date or published_date < cutoff_date:
