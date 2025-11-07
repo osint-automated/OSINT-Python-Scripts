@@ -36,6 +36,7 @@ def build_breach_query():
     keywords = [
         '"data breach"',
         '"database leak"',
+        "'data leak'",
         '"information leak"',
         '"data exposure"',
         '"cyber leak"',
