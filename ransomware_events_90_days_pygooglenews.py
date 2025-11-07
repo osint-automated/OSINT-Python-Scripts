@@ -20,20 +20,16 @@ import feedparser
 import dateparser
 
 # Register dateparser as a date handler for feedparser
-try:
-    def dateparser_tuple(date_string):
-        dt_object = dateparser.parse(date_string)
-        if dt_object:
-            return dt_object.utctimetuple()
-        return None
-    feedparser.registerDateHandler(dateparser_tuple)
-except ImportError:
-    print("dateparser not installed. Install it with 'pip install dateparser' for better date parsing.")
+def dateparser_tuple(date_string):
+    dt_object = dateparser.parse(date_string)
+    if dt_object:
+        return dt_object.utctimetuple()
+    return None
 
+feedparser.registerDateHandler(dateparser_tuple)
 
 WINDOW_DAYS = 90
 COUNTRIES = {"US": "us", "UK": "gb"}
-
 
 def clean_html(raw_html):
     """Remove HTML tags and trim extra whitespace."""
@@ -41,7 +37,6 @@ def clean_html(raw_html):
         return ""
     soup = BeautifulSoup(raw_html, "html.parser")
     return soup.get_text().strip()
-
 
 def build_query(sector):
     """Builds a search query for ransomware-related articles in a given sector."""
@@ -54,10 +49,10 @@ def build_query(sector):
         '"cyber extortion"',
     ]
     keyword_query = " OR ".join(keywords)
-    return f"({keyword_query}) {sector}"
+    sector = sector.strip()
+    return f"({keyword_query}) {sector}" if sector else f"({keyword_query})"
 
-
-def search_recent_news(sector):
+def search_recent_news(sector=""):
     """Searches Google News for ransomware attacks by sector in the last 90 days (US + UK)."""
     query = build_query(sector)
     all_articles = []
@@ -92,9 +87,10 @@ def search_recent_news(sector):
                     published_date = datetime(*item.published_parsed[:6])
                 elif hasattr(item, "updated_parsed") and item.updated_parsed:
                     published_date = datetime(*item.updated_parsed[:6])
+                else:
+                    published_date = dateparser.parse(getattr(item, "published", "") or getattr(item, "updated", ""))
 
-                # Skip old articles
-                if published_date and published_date < cutoff_date:
+                if not published_date or published_date < cutoff_date:
                     continue
 
                 source = ""
@@ -130,7 +126,8 @@ def search_recent_news(sector):
 
     # Export results
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    csv_filename = f"ransomware_news_{sector.replace(' ', '_')}_{timestamp}.csv"
+    sector_safe = sector.replace(" ", "_") if sector else "general"
+    csv_filename = f"ransomware_news_{sector_safe}_{timestamp}.csv"
     df.to_csv(csv_filename, index=False, encoding="utf-8-sig")
     print(f"\nSaved {len(df)} unique articles to '{csv_filename}'")
 
@@ -145,10 +142,6 @@ def search_recent_news(sector):
         print(f"Link: {row['Link']}")
         print("-" * 80)
 
-
 if __name__ == "__main__":
     sector_input = input("Enter the sector to monitor ransomware attacks (e.g., healthcare, finance): ").strip()
-    if sector_input:
-        search_recent_news(sector_input)
-    else:
-        print("No sector entered. Exiting.")
+    search_recent_news(sector_input)
