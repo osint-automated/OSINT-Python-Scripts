@@ -71,17 +71,15 @@ def search_recent_news():
     query = build_breach_query()
     all_articles = []
 
-    print(f"\nSearching globally for '{query}' (last 30 days)...")
+    print(f"\nSearching globally for '{query}'...")
     gn = GoogleNews(lang='en')
     try:
-        # Use 'when' parameter for a 30-day window to avoid date format issues
-        search_results = gn.search(query, when='30d')
+        search_results = gn.search(query)
         entries = search_results.get('entries', [])
         if not entries:
             print("No direct matches found, retrying with fallback 'data breach' query...")
             fallback_query = '"data breach"'
-            # Use 'when' parameter for fallback search as well
-            search_results = gn.search(fallback_query, when='30d')
+            search_results = gn.search(fallback_query)
             entries = search_results.get('entries', [])
 
         if not entries:

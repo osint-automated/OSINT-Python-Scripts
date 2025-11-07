@@ -63,23 +63,19 @@ def search_recent_news(sector):
     query = build_query(sector)
     all_articles = []
 
-    to_date = datetime.now()
-    from_date = to_date - timedelta(days=90)
-    from_str = from_date.strftime("%Y-%m-%d")
-    to_str = to_date.strftime("%Y-%m-%d")
+
 
     for country_name, country_code in countries.items():
         print(f"\nSearching for '{query}' in {country_name} (last 90 days)...")
         gn = GoogleNews(lang='en', country=country_code)
         try:
             # Use 'when' parameter for a 90-day window to avoid date format issues
-            search_results = gn.search(query, when='90d')
+            search_results = gn.search(query)
             entries = search_results.get('entries', [])
             if not entries:
                 print(f"No direct matches for {country_name}, retrying with broader term 'social engineering {sector}'...")
                 fallback_query = f'"social engineering" {sector}'
-                # Use 'when' parameter for fallback search as well
-                search_results = gn.search(fallback_query, when='90d')
+                search_results = gn.search(fallback_query)
                 entries = search_results.get('entries', [])
 
             if not entries:

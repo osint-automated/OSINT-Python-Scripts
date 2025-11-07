@@ -60,17 +60,15 @@ def search_recent_news(sector):
     query = build_apt_query(sector)
     all_articles = []
 
-    print(f"\nSearching globally for '{query}' (last 90 days)...")
+    print(f"\nSearching globally for '{query}'...")
     gn = GoogleNews(lang='en')  # Global search
     try:
-        # Use 'when' parameter for a 90-day window to avoid date format issues
-        search_results = gn.search(query, when='90d')
+        search_results = gn.search(query)
         entries = search_results.get('entries', [])
         if not entries:
             print("No direct matches, retrying with broader 'APT' query...")
             fallback_query = f'"APT" {sector}'
-            # Use 'when' parameter for fallback search as well
-            search_results = gn.search(fallback_query, when='90d')
+            search_results = gn.search(fallback_query)
             entries = search_results.get('entries', [])
 
         if not entries:
