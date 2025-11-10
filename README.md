@@ -122,6 +122,7 @@ Here is a brief overview of each script in this repository:
 -   **`newsdataapi_search.py`**: Searches for news articles using the NewsData.io API.
 -   **`osint_industries_search.py`**: Searches for information on OSINT Industries.
 -   **`phone_number_voip_check.py`**: Checks if a phone number is a VoIP number using the Twilio API.
+-   **`projecthouse_search.py`**: Searches for information related to Project House.
 -   **`phone_number_extractor.py`**: Extracts phone numbers from a webpage.
 -   **`ransomware_events_90_days_pygooglenews.py`**: Searches for ransomware events in the last 90 days using Google News.
 -   **`reverse_ip_lookup.py`**: Performs a reverse IP lookup to find domains hosted on a given IP.
