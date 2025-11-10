@@ -103,6 +103,7 @@ Here is a brief overview of each script in this repository:
 -   **`exif_extractor.py`**: Extracts EXIF metadata from image files.
 -   **`favicon_discovery.py`**: Finds websites with a matching favicon hash using Shodan.
 -   **`file_metadata_analysis.py`**: Extracts metadata from various file types.
+-   **`futurehouse_search.py`**: Uses the Future House report generator.
 -   **`general_rss_search.py`**: Searches for keywords in a list of general news RSS feeds.
 -   **`get_ip_address.py`**: Pings a domain to get its IP address.
 -   **`global_sitrep_generator.py`**: Generates a global situation report from news articles.
