@@ -20,7 +20,7 @@ MAX_ARTICLES_PER_QUERY = 100
 MAX_PAGES = 1
 
 access_date = datetime.date.today()
-x_days_ago = access_date - datetime.timedelta(days=3)
+x_days_ago = access_date - datetime.timedelta(days=7)
 
 report_30_days_ago_date_api = x_days_ago.strftime("%Y-%m-%d")
 report_todays_date_api = access_date.strftime("%Y-%m-%d")
