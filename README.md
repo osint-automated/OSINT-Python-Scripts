@@ -128,6 +128,7 @@ Here is a brief overview of each script in this repository:
 -   **`projecthouse_search.py`**: Searches for information related to Project House.
 -   **`phone_number_extractor.py`**: Extracts phone numbers from a webpage.
 -   **`ransomware_events_90_days_pygooglenews.py`**: Searches for ransomware events in the last 90 days using Google News.
+-   **`ransomwarelive_sector_country_search.py`**: Searches for ransomware events by sector and country using Ransomware.live.
 -   **`reverse_ip_lookup.py`**: Performs a reverse IP lookup to find domains hosted on a given IP.
 -   **`robotstxt_site_enum.py`**: Enumerates a website's `robots.txt` and `sitemap.xml` files.
 -   **`russian_rss_search.py`**: Searches for keywords in various Russian news RSS feeds.
