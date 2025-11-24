@@ -87,6 +87,7 @@ Here is a brief overview of each script in this repository:
 
 -   **`abuseipdb_search.py`**: Checks the reputation of an IP address using the AbuseIPDB API.
 -   **`ahmia_fi_scraper.py`**: Scrapes .onion links from the Ahmia.fi search engine.
+-   **`ai_image_analysis.py`**: Analyzes an image using AI.
 -   **`alienvault_otx_search.py`**: Searches for IP address information on AlienVault OTX.
 -   **`apt_campaign_search_90_days_pygooglenews.py`**: Searches for APT campaign news in the last 90 days using Google News.
 -   **`chatgpt_api.py`**: A simple command-line interface to interact with OpenAI's GPT models.
@@ -116,19 +117,17 @@ Here is a brief overview of each script in this repository:
 -   **`image_scraper.py`**: Scrapes images from a webpage.
 -   **`influence_ops_search_30_days_pygooglenews.py`**: Searches for influence operations news in the last 30 days using Google News.
 -   **`instagram_profile_scraper.py`**: Scrapes public Instagram profiles using the Apify API.
--   **`ip_vpn_check.py`**: Checks if an IP address is a VPN or proxy.
 -   **`ip_geolocation.py`**: Geolocates an IP address using the ipinfo.io API.
+-   **`ip_vpn_check.py`**: Checks if an IP address is a VPN or proxy.
 -   **`list_ips_proxy_checker.py`**: Checks a list of IP addresses for VPN or proxy usage.
 -   **`malware_events_search_90_days_pygooglenews.py`**: Searches for malware events in the last 90 days using Google News.
 -   **`news_summary_current_claude.py`**: Summarizes news articles from the Currents API using Anthropic's Claude.
 -   **`newsapi_query_to_csv.py`**: Queries the NewsAPI and saves the results to a CSV file.
 -   **`newsdataapi_search.py`**: Searches for news articles using the NewsData.io API.
 -   **`osint_industries_search.py`**: Searches for information on OSINT Industries.
--   **`phone_number_voip_check.py`**: Checks if a phone number is a VoIP number using the Twilio API.
--   **`projecthouse_search.py`**: Searches for information related to Project House.
 -   **`phone_number_extractor.py`**: Extracts phone numbers from a webpage.
+-   **`phone_number_voip_check.py`**: Checks if a phone number is a VoIP number using the Twilio API.
 -   **`ransomware_events_90_days_pygooglenews.py`**: Searches for ransomware events in the last 90 days using Google News.
--   **`ransomwarelive_sector_country_search.py`**: Searches for ransomware events by sector and country using Ransomware.live.
 -   **`reverse_ip_lookup.py`**: Performs a reverse IP lookup to find domains hosted on a given IP.
 -   **`robotstxt_site_enum.py`**: Enumerates a website's `robots.txt` and `sitemap.xml` files.
 -   **`russian_rss_search.py`**: Searches for keywords in various Russian news RSS feeds.
@@ -146,8 +145,8 @@ Here is a brief overview of each script in this repository:
 -   **`vpn_proxy_checker.py`**: Checks if an IP address is a VPN or proxy using the ProxyCheck.io API.
 -   **`website_fingerprinting.py`**: Fingerprints a website by analyzing its HTTP headers.
 -   **`whois_lookup.py`**: Performs a WHOIS lookup for a domain or IP address.
--   **`youtube_video_downloader.py`**: Downloads a YouTube video.
 -   **`youtube_channel_stats.py`**: Fetches statistics for a YouTube channel.
 -   **`youtube_comments_download.py`**: Downloads comments from a YouTube video.
--   **`youtube_transcript_download.py`** Downloads transcript from a YouTube video.
 -   **`youtube_multi_channel_stats.py`**: Fetches statistics for multiple YouTube channels.
+-   **`youtube_transcript_download.py`** Downloads transcript from a YouTube video.
+-   **`youtube_video_downloader.py`**: Downloads a YouTube video.
