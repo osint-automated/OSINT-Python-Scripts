@@ -54,7 +54,7 @@ def ai_summary(results):
         messages=[
             {
                 "role": "user",
-                "content": f"Summarize the following geopolitical/military related information into a concise paragraph using active voice only and no markdown at all. Dates structured as day month, i.e. 1 November: {results_string}"
+                "content": f"Summarize the following information into a concise paragraph using active voice only and no markdown at all. Dates structured as day month, i.e. 1 November: {results_string}"
             }
         ]
     )
