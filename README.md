@@ -149,5 +149,6 @@ Here is a brief overview of each script in this repository:
 -   **`youtube_channel_stats.py`**: Fetches statistics for a YouTube channel.
 -   **`youtube_comments_download.py`**: Downloads comments from a YouTube video.
 -   **`youtube_multi_channel_stats.py`**: Fetches statistics for multiple YouTube channels.
--   **`youtube_transcript_download.py`** Downloads transcript from a YouTube video.
+-   **`youtube_transcript_download.py`**: Downloads transcript from a YouTube video.
+-   **`youtube_transcript_to_AI_summary.py`**: Downloads a YouTube video transcript and summarizes it using AI.
 -   **`youtube_video_downloader.py`**: Downloads a YouTube video.
