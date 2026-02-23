@@ -117,7 +117,7 @@ def main():
 
     # Search terms mapped to combatant commands
     search_terms = {
-        "SOUTHCOM": "Venezuela AND (Russia OR United States OR USA OR US OR U.S.) OR Mexico AND Cartel",
+        "SOUTHCOM": "Mexico AND cartel",
         "EUCOM": "Ukraine AND Russia OR NATO",
         "PACOM": "China OR North Korea OR Taiwan OR South China Sea",
         "CENTCOM": "Iran OR Israel OR Gaza OR Hamas OR Lebanon OR Syria",
