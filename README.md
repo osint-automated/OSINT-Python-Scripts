@@ -137,6 +137,7 @@ Here is a brief overview of each script in this repository:
 -   **`simple_link_scraper.py`**: Scrapes all the links from a webpage.
 -   **`social_engineering_campign_search_90_days_pygooglenews.py`**: Searches for social engineering campaign news in the last 90 days using Google News.
 -   **`status_check_up_or_down.py`**: Checks the status of a list of websites.
+-   **`subdomain_enumerator.py`**: Enumerates subdomains for a given domain.
 -   **`text_scraper.py`**: Scrapes the main text content from a webpage.
 -   **`tiktok_scraper.py`**: Scrapes comments from TikTok videos using the Apify API.
 -   **`top_keywords.py`**: Extracts the top keywords from a text file.
