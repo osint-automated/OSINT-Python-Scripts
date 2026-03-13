@@ -110,6 +110,7 @@ Here is a brief overview of each script in this repository:
 -   **`get_ip_address.py`**: Pings a domain to get its IP address.
 -   **`global_sitrep_generator.py`**: Generates a global situation report from news articles.
 -   **`google_news_scraper.py`**: Scrapes news articles from Google News.
+-   **`google_scholar_scraper.py`**: Searches for Google Scholar results based on query and date parameters.
 -   **`google_search.py`**: Performs a Google Custom Search.
 -   **`greynoise_ip_lookup.py`**: Looks up an IP address in the GreyNoise database.
 -   **`http_response_header_analysis.py`**: Analyzes the HTTP response headers of a website.
