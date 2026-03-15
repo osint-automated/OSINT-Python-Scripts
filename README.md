@@ -75,6 +75,7 @@ viewdns_api_key=''
 alienvault_api_key=''
 futurehouse_api_key=''
 urlscan_io_api_key=''
+xai_api_key=''
 ```
 
 ### 6. External Dependencies
@@ -109,6 +110,7 @@ Here is a brief overview of each script in this repository:
 -   **`general_rss_search.py`**: Searches for keywords in a list of general news RSS feeds.
 -   **`get_ip_address.py`**: Pings a domain to get its IP address.
 -   **`global_sitrep_generator.py`**: Generates a global situation report from news articles.
+    **`global_sitrep_generator_v2.py`**: Generates a global situation report using xAI with real-time access to X posts and news articles.
 -   **`google_news_scraper.py`**: Scrapes news articles from Google News.
 -   **`google_scholar_scraper.py`**: Searches for Google Scholar results based on query and date parameters.
 -   **`google_search.py`**: Performs a Google Custom Search.
