@@ -44,6 +44,7 @@ def generate_executive_summary(results, openai_api_key):
         "Take the following OSINT summaries and generate an executive summary paragraph for an intelligence report."
         "Active voice only, technical tone only, dates should be structured as day month, past tense only."
         "Focus on the most critical military and geopolitical updates only."
+        "Do not include any markdown formatting in the output."
         "Begin with 'During the reporting period, ...'\n\n"
         f"{results}"
     )
@@ -108,11 +109,11 @@ def main():
     openai_api_key = os.getenv('openai_api_key')
 
     search_terms = {
-        "SOUTHCOM": "give me a comprehensive summary paragraph covering geopolitical and military events in the last 24 hours ONLY for central/south america, active voice only, technical tone only, past tense only, dates should be structured as day month. Begin with 'During the reporting period, ...'",
-        "EUCOM": "give me a comprehensive summary paragraph covering geopolitical and military events in the last 24 hours ONLY for the russia/ukraine conflict, active voice only, technical tone only, past tense only, dates should be structured as day month. Begin with 'During the reporting period, ...'",
-        "PACOM": "give me a comprehensive summary paragraph covering geopolitical and military events in the last 24 hours ONLY for China in the Pacific/PACOM, active voice only, technical tone only, past tense only, dates should be structured as day month. Begin with 'During the reporting period, ...'",
-        "CENTCOM": "give me a comprehensive summary paragraph covering geopolitical and military events in the last 24 hours ONLY for the US-Israel-Iran conflict, active voice only, technical tone only, past tense only, dates should be structured as day month. Begin with 'During the reporting period, ...'",
-        "AFRICOM": "give me a comprehensive summary paragraph covering geopolitical and military events in the last 24 hours ONLY for Africa, active voice only, technical tone only, past tense only, dates should be structured as day month. Begin with 'During the reporting period, ...'"
+        "SOUTHCOM": "give me a comprehensive summary paragraph covering geopolitical and military events in the last 24 hours ONLY for central/south america, active voice only, technical tone only, past tense only, dates should be structured as day month. Do not include any markdown formatting in the output. Begin with 'During the reporting period, ...'",
+        "EUCOM": "give me a comprehensive summary paragraph covering geopolitical and military events in the last 24 hours ONLY for the russia/ukraine conflict, active voice only, technical tone only, past tense only, dates should be structured as day month. Do not include any markdown formatting in the output. Begin with 'During the reporting period, ...'",
+        "PACOM": "give me a comprehensive summary paragraph covering geopolitical and military events in the last 24 hours ONLY for China in the Pacific/PACOM, active voice only, technical tone only, past tense only, dates should be structured as day month. Do not include any markdown formatting in the output. Begin with 'During the reporting period, ...'",
+        "CENTCOM": "give me a comprehensive summary paragraph covering geopolitical and military events in the last 24 hours ONLY for the US-Israel-Iran conflict, active voice only, technical tone only, past tense only, dates should be structured as day month. Do not include any markdown formatting in the output. Begin with 'During the reporting period, ...'",
+        "AFRICOM": "give me a comprehensive summary paragraph covering geopolitical and military events in the last 24 hours ONLY for Africa, active voice only, technical tone only, past tense only, dates should be structured as day month. Do not include any markdown formatting in the output. Begin with 'During the reporting period, ...'"
     }
 
     all_summaries = []
