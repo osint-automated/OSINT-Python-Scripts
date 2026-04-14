@@ -142,6 +142,7 @@ Here is a brief overview of each script in this repository:
 -   **`status_check_up_or_down.py`**: Checks the status of a list of websites.
 -   **`subdomain_enumerator.py`**: Enumerates subdomains for a given domain.
 -   **`text_scraper.py`**: Scrapes the main text content from a webpage.
+-   **`telegram_scrape_and_processing.py`**: Scrapes a curated list of public Telegram channels and processes the results based on a user-defined keyword list, saving filtered results to a csv file.
 -   **`tiktok_scraper.py`**: Scrapes comments from TikTok videos using the Apify API.
 -   **`top_keywords.py`**: Extracts the top keywords from a text file.
 -   **`tor66_scraper.py`**: Scrapes .onion links from the Tor66 search engine.
